@@ -289,6 +289,83 @@ section.hero {
   color: #fff;
 }
 
+/* Mod Options Section */
+section.mod-options {
+  padding: 4.5rem 0;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.option-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.option-card:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(0, 195, 255, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+.option-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.option-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.option-header h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+
+.option-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.option-list li {
+  position: relative;
+  padding-left: 1.1rem;
+}
+
+.option-list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--switch-blue);
+  font-weight: bold;
+}
+
+.option-list strong {
+  color: #fff;
+}
+
 /* Interactive Input Display Showcase */
 section.interactive-showcase {
   padding: 4rem 0;
