@@ -375,3 +375,15 @@ void drawStageWarpWindow() {
         ImGui::Unindent();
     }
 }
+
+void warpToKingdom(int kingdomIdx, int scenarioNo) {
+    HakoniwaSequence* gameSeq = helpers::tryGetHakoniwaSequence();
+    if (!gameSeq || !gameSeq->mGameDataHolderAccessor.mData) return;
+    if (kingdomIdx < 0 || kingdomIdx >= (int)(sizeof(mainNames) / sizeof(mainNames[0]))) return;
+    int sc = scenarioNo == 0 ? -1 : scenarioNo;
+    ChangeStageInfo stageInfo(
+        gameSeq->mGameDataHolderAccessor.mData, "start", mainNames[kingdomIdx].mInternal, false, sc,
+        ChangeStageInfo::SubScenarioType::NO_SUB_SCENARIO
+    );
+    gameSeq->mGameDataHolderAccessor.mData->changeNextStage(&stageInfo, 0);
+}

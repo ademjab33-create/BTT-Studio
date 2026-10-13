@@ -1,0 +1,34 @@
+name: Create GitHub Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Create Release Packages
+        run: |
+          mkdir -p release-artifacts
+          # If pre-packaged zips exist or create them
+          if [ -d "release" ]; then
+            cp release/*.zip release-artifacts/ || true
+          fi
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "BTT Studio 1.0 — Practice Mod 1.0 (${{ github.ref_name }})"
+          body_path: GITHUB_RELEASE_NOTES.md
+          files: release-artifacts/*
+          draft: false
+          prerelease: false

@@ -3,6 +3,7 @@
 #include "hk/diag/diag.h"
 
 #include "nn/fs.h" // IWYU pragma: keep
+#include <cstdlib>
 
 namespace FsHelper {
 nn::Result writeFileToPath(void* buf, size_t size, const char* path) {
@@ -43,19 +44,28 @@ nn::Result writeFileToPath(void* buf, size_t size, const char* path) {
 void loadFileFromPath(LoadData& loadData, sead::Heap* heap) {
     nn::fs::FileHandle handle;
 
-    HK_ABORT_UNLESS(FsHelper::isFileExist(loadData.path), "Failed to Find File!\nPath: %s", loadData.path);
+    if (!FsHelper::isFileExist(loadData.path)) return;
 
-    HK_ABORT_UNLESS_R(nn::fs::OpenFile(&handle, loadData.path, nn::fs::OpenMode_Read).IsFailure());
+    if (nn::fs::OpenFile(&handle, loadData.path, nn::fs::OpenMode_Read).IsFailure()) return;
 
     long size = 0;
     nn::fs::GetFileSize(&size, handle);
-    loadData.buffer = heap->alloc(size);
-    // loadData.buffer = malloc(size);
+    if (size <= 0) {
+        nn::fs::CloseFile(handle);
+        return;
+    }
+
+    if (heap) {
+        loadData.buffer = heap->tryAlloc(size, 8);
+    }
+    if (!loadData.buffer) {
+        loadData.buffer = malloc(size);
+    }
     loadData.bufSize = size;
 
-    HK_ABORT_UNLESS(loadData.buffer, "Failed to Allocate Buffer! File Size: %ld", size);
-
-    HK_ABORT_UNLESS_R(nn::fs::ReadFile(handle, 0, loadData.buffer, size).IsFailure());
+    if (loadData.buffer) {
+        nn::fs::ReadFile(handle, 0, loadData.buffer, size);
+    }
 
     nn::fs::CloseFile(handle);
 }

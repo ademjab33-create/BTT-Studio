@@ -36,9 +36,32 @@ public:
         Orange,
         Purple,
         Pink,
-        LightBlue
+        LightBlue,
+        Multicolor
     };
     enum class SettingsHotkey : u8 { Disabled, None, L, R, ZL, ZR, LR, LZL, LZR, RZL, RZR };
+    enum class TpKey : u8 {
+        DLeft = 0,
+        DRight,
+        DDown,
+        DUp,
+        L_DLeft,
+        L_DRight,
+        L_DDown,
+        L_DUp,
+        ZL_DLeft,
+        ZL_DRight,
+        ZL_DDown,
+        ZL_DUp,
+        R_DLeft,
+        R_DRight,
+        LStick,
+        RStick,
+        L_LStick,
+        L_RStick,
+        ZL_ZR,
+        Disabled
+    };
 
     struct __attribute__((packed)) Settings {
         char Version[0x8] = VERSION;
@@ -52,7 +75,7 @@ public:
         SETTING(AlwaysCheckpoints);
         SETTING(RefreshWarpText);
         SETTING(RefreshKingdomEnter);
-        SETTING(TpHotkeys);
+        SETTING(TpHotkeys) = true;
         SETTING(DisableTpPuppet);
         SETTING(RefreshPurps);
         SETTING(InputDisplay);
@@ -64,6 +87,7 @@ public:
         SETTING(AllCheckpoints);
         SETTING(Input2P);
         SETTING(HintPhotoSpawn);
+        SETTING(LuigiPixels) = true;
         SETTING(SegmentTimer);
         SETTING(SegTimerSplit);
         SETTING(RefreshNpc);
@@ -74,6 +98,9 @@ public:
         InputDisplayColor mInputDisplayStickColor = InputDisplayColor::White;
         InputDisplayColor mInputDisplayRingColor = InputDisplayColor::Gray;
         InputDisplayColor mInputDisplayBackColor = InputDisplayColor::Black;
+        TpKey mSavePosKey = TpKey::DLeft;
+        TpKey mLoadPosKey = TpKey::DRight;
+        TpKey mRestartSceneKey = TpKey::DUp;
         SettingsHotkey mKillSceneKey = SettingsHotkey::Disabled;
         SettingsHotkey mHealMarioKey = SettingsHotkey::Disabled;
         SettingsHotkey mPrevSceneKey = SettingsHotkey::Disabled;

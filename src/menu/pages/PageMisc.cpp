@@ -1,5 +1,6 @@
 #include "hk/sail/detail.h"
 
+#include "al/Library/Camera/CameraUtil.h"
 #include "al/Library/LiveActor/ActorFlagFunction.h"
 #include "al/Library/LiveActor/ActorMovementFunction.h"
 #include "al/Library/LiveActor/ActorPoseUtil.h"
@@ -67,18 +68,26 @@ void Menu::drawTeleportCat() {
 void Menu::saveTeleport(TpState& state) {
     if (!stageScene || !playerHak) return;
 
+    al::LiveActor* hack = playerHak->mHackKeeper ? playerHak->mHackKeeper->mHackActor : nullptr;
+    al::LiveActor* target = hack ? hack : (al::LiveActor*)playerHak;
+
     state.saved = true;
-    state.pos = al::getTrans(playerHak);
-    state.quat = al::getQuat(playerHak);
+    state.pos = al::getTrans(target);
+    state.quat = al::getQuat(target);
     strcpy(
         state.stageName,
         getEnglishName(GameDataFunction::getCurrentStageName(GameDataHolderAccessor(stageScene)))
     );
+    setPopupText("Position Saved");
 }
 
 void Menu::loadTeleport(TpState& state) {
     if (!stageScene || !playerHak) return;
-    al::LiveActor* hack = playerHak->mHackKeeper->mHackActor;
+    if (!state.saved) {
+        setPopupText("No Saved Position");
+        return;
+    }
+    al::LiveActor* hack = playerHak->mHackKeeper ? playerHak->mHackKeeper->mHackActor : nullptr;
 
     if (hack) {
         al::offCollide(hack);
@@ -86,21 +95,31 @@ void Menu::loadTeleport(TpState& state) {
         al::updatePoseQuat(hack, state.quat);
         al::setVelocityZero(hack);
         al::onCollide(hack);
+        al::requestCancelCameraInterpole(hack, 0);
+        if (stageScene) al::requestCancelCameraInterpole(stageScene, 0);
+        mCancelCameraInterpoleFrames = 10;
         menuTimer = 0;
+        setPopupText("Position Loaded");
         return;
     }
 
     if (set->getSettings()->mIsEnableDisableTpPuppet && helpers::isGetShineState(stageScene)) {
         al::setTrans(playerHak, state.pos);
         al::updatePoseQuat(playerHak, state.quat);
+        al::setVelocityZero(playerHak);
         menuTimer = 0;
     } else {
         playerHak->startDemoPuppetable();
         al::setTrans(playerHak, state.pos);
         al::updatePoseQuat(playerHak, state.quat);
+        al::setVelocityZero(playerHak);
         playerHak->endDemoPuppetable();
         menuTimer = 0;
     }
+    al::requestCancelCameraInterpole(playerHak, 0);
+    if (stageScene) al::requestCancelCameraInterpole(stageScene, 0);
+    mCancelCameraInterpoleFrames = 10;
+    setPopupText("Position Loaded");
 }
 
 void Menu::drawTimerCat() {
@@ -144,14 +163,8 @@ void Menu::drawPageMisc() {
             ImGui::Indent();
             ImGui::Combo("Body", &mSelectedBody, bodyNames, IM_ARRAYSIZE(bodyNames));
             ImGui::Combo("Cap", &mSelectedCap, capNames, IM_ARRAYSIZE(capNames));
-            if (ImGui::Button("Set Outfit")) {
-                if (gameSeq->mGameDataHolderAccessor.mData && stageScene) {
-                    GameDataFunction::wearCap(gameSeq->mGameDataHolderAccessor.mData, capNames[mSelectedCap]);
-                    GameDataFunction::wearCostume(
-                        gameSeq->mGameDataHolderAccessor.mData, bodyNames[mSelectedBody]
-                    );
-                    stageScene->kill();
-                }
+            if (ImGui::Button("Apply Outfit")) {
+                applyOutfit();
             }
             ImGui::Unindent();
         }
@@ -226,62 +239,12 @@ void Menu::drawPageMisc() {
         // if (ImGui::Button("Remove Cappy")) {
         //     if (playerHak) GameDataFunction::disableCapByPlacement((al::LiveActor*)playerHak->mHackCap);
         // }
-        if (ImGui::Button("Kill Scene")) {
-            if (stageScene && playerHak) {
-                al::NerveKeeper* sceneNerveKeeper = stageScene->getNerveKeeper();
-                char* stateName = nullptr;
-                char* stateNrvName = nullptr;
-                char* stateNrvNameShort = nullptr;
-                char* stateNameShort = nullptr;
-                bool cmpNrv = false;
-                bool cmpState = false;
-
-                if (sceneNerveKeeper->mStateCtrl) {
-                    al::NerveStateCtrl::State* state = sceneNerveKeeper->mStateCtrl->mCurrentState;
-
-                    if (state) {
-                        const al::Nerve* stateNerve = state->state->getNerveKeeper()->getCurrentNerve();
-                        int status;
-                        stateName =
-                            abi::__cxa_demangle(typeid(*state->state).name(), nullptr, nullptr, &status);
-                        stateNameShort = stateName + strlen("StageSceneState");
-
-                        if (stateName) {
-                            stateNrvName =
-                                abi::__cxa_demangle(typeid(*stateNerve).name(), nullptr, nullptr, &status);
-
-                            if (stateNrvName) {
-                                auto prefixLen2 =
-                                    stateNrvName[0] == '(' ? strlen("(anonymous namespace)::") : 0;
-                                stateNrvNameShort =
-                                    stateNrvName + prefixLen2 + strlen(stateName) + strlen("nrv");
-
-                                cmpNrv = strcmp(stateNrvNameShort, "SkipDemo") == 0 ||
-                                         strcmp(stateNrvNameShort, "Skip") == 0;
-                                cmpState = strcmp(stateNameShort, "PauseMenu") == 0 ||
-                                           strcmp(stateNameShort, "SnapShot") == 0;
-                            }
-                        }
-                    }
-                    if (stateNrvName) free(stateNrvName);
-                    if (stateName) free(stateName);
-                    if (!(cmpNrv || cmpState || PlayerFunction::isPlayerDeadStatus(playerHak))) {
-                        if (mIsReloadPos) {
-                            reloadPosTimer = 0;
-                            reloadStagePos = al::getTrans(playerHak);
-                            reloadStageQuat = al::getQuat(playerHak);
-                            ChangeStageInfo info = ChangeStageInfo(
-                                gameSeq->mGameDataHolderAccessor, "",
-                                GameDataFunction::getCurrentStageName(gameSeq->mGameDataHolderAccessor),
-                                false, -1, ChangeStageInfo::SubScenarioType::NO_SUB_SCENARIO
-                            );
-                            gameSeq->mGameDataHolderAccessor.mData->changeNextStage(&info, 0);
-                        } else {
-                            stageScene->kill();
-                        }
-                    }
-                }
-            }
+        if (ImGui::Button("Restart Scene")) {
+            restartScene();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Restart at Pos")) {
+            triggerReloadPos();
         }
         ImGui::SameLine();
         if (ImGui::Button("Previous Scene")) {

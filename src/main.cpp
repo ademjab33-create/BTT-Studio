@@ -16,21 +16,28 @@
 #include "customBoot/BootHooks.hpp"
 #include "helpers/InputHelper.h"
 #include "helpers/saveFileHelper.h"
-#include "ImGui.h"
+#include "BttImGui.h"
 #include "logger.h"
 #include "menu/InputDisplay.h"
 #include "menu/Menu.h"
 #include "menu/Timer.h"
+#include "settings/LuigiPixels.h"
 #include "settings/SettingsHooks.h"
 #include "settings/TimerHooks.h"
 
 using namespace hk;
 
 namespace btt {
+sead::Heap* sHeap = nullptr;
+
 sead::Heap* initializeHeap() {
-    return sead::ExpHeap::create(
-        2_MB, "BTTStudioHeap", al::getStationedHeap(), 8, sead::Heap::cHeapDirection_Forward, false
+    sHeap = sead::ExpHeap::create(
+        8_MB, "BTTStudioHeap", al::getStationedHeap(), 8, sead::Heap::cHeapDirection_Forward, false
     );
+    return sHeap;
+}
+sead::Heap* getHeap() {
+    return sHeap;
 }
 } // namespace btt
 
@@ -92,6 +99,10 @@ HkTrampoline gameSystemInit = [](TrampolineStatic(), GameSystem* gameSystem) -> 
             }
         }
     });
+    // Luigi Pixels (3D in-world animated sprite)
+    btt::imgui::addDrawFunc([] {
+        btt::LuigiPixels::draw();
+    });
     logger->log(Logger::LogType::LogInfo, "ImGui setup done");
 
     InputHelper::setDisableMouse(true);
@@ -121,48 +132,50 @@ HkTrampoline hakoniwaSequenceUpdate = [](TrampolineStatic(), HakoniwaSequence* h
     btt::Menu::instance()->handleAlways();
 };
 
-void disableButtons(nn::hid::NpadBaseState* state) {
-    if (!InputHelper::isReadInputs() && InputHelper::isInputToggled() &&
+void disableButtons(nn::hid::NpadBaseState* state, int count) {
+    if (!InputHelper::isReadInputs() && btt::Menu::instance() &&
         btt::Menu::instance()->mIsEnabledMenu) {
         // clear out the data within the state (except for the sampling number and attributes)
-        state->mButtons = nn::hid::NpadButtonSet();
-        state->mAnalogStickL = nn::hid::AnalogStickState();
-        state->mAnalogStickR = nn::hid::AnalogStickState();
+        for (int i = 0; i < count; i++) {
+            state[i].mButtons = nn::hid::NpadButtonSet();
+            state[i].mAnalogStickL = nn::hid::AnalogStickState();
+            state[i].mAnalogStickR = nn::hid::AnalogStickState();
+        }
     }
 }
 
 HkTrampoline DisableFullKeyState = [](TrampolineStatic(), int* unkInt, nn::hid::NpadFullKeyState* state,
                                       int count, const unsigned int& port) -> int {
     int result = orig(unkInt, state, count, port);
-    disableButtons(state);
+    disableButtons(state, count);
     return result;
 };
 
 HkTrampoline DisableHandheldState = [](TrampolineStatic(), int* unkInt, nn::hid::NpadHandheldState* state,
                                        int count, const unsigned int& port) -> int {
     int result = orig(unkInt, state, count, port);
-    disableButtons(state);
+    disableButtons(state, count);
     return result;
 };
 
 HkTrampoline DisableJoyDualState = [](TrampolineStatic(), int* unkInt, nn::hid::NpadJoyDualState* state,
                                       int count, const unsigned int& port) -> int {
     int result = orig(unkInt, state, count, port);
-    disableButtons(state);
+    disableButtons(state, count);
     return result;
 };
 
 HkTrampoline DisableJoyLeftState = [](TrampolineStatic(), int* unkInt, nn::hid::NpadJoyLeftState* state,
                                       int count, const unsigned int& port) -> int {
     int result = orig(unkInt, state, count, port);
-    disableButtons(state);
+    disableButtons(state, count);
     return result;
 };
 
 HkTrampoline DisableJoyRightState = [](TrampolineStatic(), int* unkInt, nn::hid::NpadJoyRightState* state,
                                        int count, const unsigned int& port) -> int {
     int result = orig(unkInt, state, count, port);
-    disableButtons(state);
+    disableButtons(state, count);
     return result;
 };
 
@@ -175,7 +188,7 @@ extern "C" void hkMain() {
     btt::SettingsHooks::installSettingsHooks();
     btt::TimerHooks::installTimerHooks();
 
-    customboot::prepareCustomBootHook.installAtSym<"_ZN10BootLayoutC1ERKN2al14LayoutInitInfoE">();
+    // customboot::prepareCustomBootHook.installAtSym<"_ZN10BootLayoutC1ERKN2al14LayoutInitInfoE">();
 
     hk::gfx::ImGuiBackendNvn::instance()->installHooks(false);
 

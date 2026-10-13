@@ -28,6 +28,7 @@
 #include "logger.h"
 #include "menu/Menu.h"
 #include "settings/DemoHooks.hpp"
+#include "settings/LuigiPixels.h"
 #include "src/settings/SettingsMgr.h"
 
 using namespace hk;
@@ -52,7 +53,10 @@ HkTrampoline ShineRefreshHook = [](TrampolineStatic(), GameDataHolderWriter writ
     if (!SettingsMgr::instance()->getSettings()->mIsEnableMoonRefresh) orig(writer, shineInfo);
 };
 
-HkTrampoline marioControl = [](TrampolineStatic(), al::LiveActor* player) -> void { orig(player); };
+HkTrampoline marioControl = [](TrampolineStatic(), al::LiveActor* player) -> void {
+    orig(player);
+    LuigiPixels::update(player);
+};
 
 HkTrampoline stageSceneControlHook = [](TrampolineStatic(), StageScene* stageScene) -> void {
     if (SettingsMgr::instance()->getSettings()->mIsEnableDisableMusic) {
@@ -82,7 +86,18 @@ HkTrampoline NoDamageHook = [](TrampolineStatic(), PlayerHitPointData* hitPointD
 };
 
 HkTrampoline warpTextHook = [](TrampolineStatic(), GameDataHolderAccessor accessor) -> bool {
-    return SettingsMgr::instance()->getSettings()->mIsEnableRefreshWarpText ? false : orig(accessor);
+    auto* s = SettingsMgr::instance()->getSettings();
+    return (s && (s->mIsEnableRefreshWarpText || s->mIsEnableRefreshNpc)) ? false : orig(accessor);
+};
+
+HkTrampoline isEnableShowExplainHook = [](TrampolineStatic(), GameDataHolderAccessor accessor) -> bool {
+    auto* s = SettingsMgr::instance()->getSettings();
+    return (s && (s->mIsEnableRefreshWarpText || s->mIsEnableRefreshNpc)) ? true : orig(accessor);
+};
+
+HkTrampoline gameDataFileAlreadyShowExplainHook = [](TrampolineStatic(), void* file) -> bool {
+    auto* s = SettingsMgr::instance()->getSettings();
+    return (s && (s->mIsEnableRefreshWarpText || s->mIsEnableRefreshNpc)) ? false : orig(file);
 };
 
 HkTrampoline refreshPurpsHook = [](TrampolineStatic(), GameDataHolderAccessor accessor,
@@ -99,7 +114,8 @@ HkTrampoline doorRefreshHook = [](TrampolineStatic(), DoorAreaChange* doorAreaCh
 };
 
 HkTrampoline checkpointFlagHook = [](TrampolineStatic(), CheckpointFlag* checkpointFlag) -> void {
-    if (!SettingsMgr::instance()->getSettings()->mIsEnableNoCheckpointTouch) orig(checkpointFlag);
+    auto* s = SettingsMgr::instance()->getSettings();
+    if (!s || !s->mIsEnableNoCheckpointTouch || s->mIsEnableRefreshWarpText) orig(checkpointFlag);
 };
 
 HkTrampoline cloudSkipHook = [](TrampolineStatic(), StageScene* stageScene) -> bool {
@@ -247,7 +263,8 @@ HkTrampoline seedRefreshHook2 = [](TrampolineStatic(), al::LiveActor* actor, al:
 };
 
 HkTrampoline hintPhotoHook = [](TrampolineStatic(), al::LiveActor* actor, char* name) -> bool {
-    return SettingsMgr::instance()->getSettings()->mIsEnableHintPhotoSpawn ? true : orig(actor, name);
+    auto* s = SettingsMgr::instance()->getSettings();
+    return (s && (s->mIsEnableHintPhotoSpawn || s->mIsEnableLuigiPixels)) ? true : orig(actor, name);
 };
 
 constexpr static const char* worldTravelingStatus[] = { "Init",       "CityWorld0", "WaterfallWorld0",
@@ -271,7 +288,23 @@ HkTrampoline worldTravelingHook2 = [](TrampolineStatic(), WorldTravelingNpc* act
 };
 
 HkTrampoline toadRefreshHook = [](TrampolineStatic(), al::LiveActor* actor) -> bool {
-    return SettingsMgr::instance()->getSettings()->mIsEnableRefreshNpc ? false : orig(actor);
+    auto* s = SettingsMgr::instance()->getSettings();
+    return (s && (s->mIsEnableRefreshNpc || s->mIsEnableRefreshWarpText)) ? false : orig(actor);
+};
+
+HkTrampoline hintToadRefreshHook = [](TrampolineStatic(), al::LiveActor* actor) -> bool {
+    auto* s = SettingsMgr::instance()->getSettings();
+    return (s && (s->mIsEnableRefreshNpc || s->mIsEnableRefreshWarpText)) ? false : orig(actor);
+};
+
+HkTrampoline musicToadRefreshHook = [](TrampolineStatic(), al::LiveActor* actor) -> bool {
+    auto* s = SettingsMgr::instance()->getSettings();
+    return (s && (s->mIsEnableRefreshNpc || s->mIsEnableRefreshWarpText)) ? false : orig(actor);
+};
+
+HkTrampoline peachRefreshHook = [](TrampolineStatic(), al::LiveActor* actor) -> bool {
+    auto* s = SettingsMgr::instance()->getSettings();
+    return (s && (s->mIsEnableRefreshNpc || s->mIsEnableRefreshWarpText)) ? false : orig(actor);
 };
 
 HkTrampoline coinStackRefreshHook = [](TrampolineStatic(), al::LiveActor* actor, al::PlacementId* id,
@@ -284,7 +317,8 @@ HkTrampoline coinStackRefreshHook = [](TrampolineStatic(), al::LiveActor* actor,
 };
 
 HkTrampoline kingdomEnterHook = [](TrampolineStatic(), GameProgressData* data, int i) -> bool {
-    return SettingsMgr::instance()->getSettings()->mIsEnableRefreshKingdomEnter ? false : orig(data, i);
+    auto* s = SettingsMgr::instance()->getSettings();
+    return (s && (s->mIsEnableRefreshKingdomEnter || s->mIsEnableRefreshNpc)) ? false : orig(data, i);
 };
 
 class SaveObjInfo {
@@ -347,6 +381,10 @@ void SettingsHooks::installSettingsHooks() {
     NoDamageHook.installAtSym<"_ZN16GameDataFunction12damagePlayerE20GameDataHolderWriter">();
     warpTextHook
         .installAtSym<"_ZN16GameDataFunction34isAlreadyShowExplainCheckpointFlagE22GameDataHolderAccessor">();
+    isEnableShowExplainHook
+        .installAtSym<"_ZN16GameDataFunction33isEnableShowExplainCheckpointFlagE22GameDataHolderAccessor">();
+    gameDataFileAlreadyShowExplainHook
+        .installAtSym<"_ZNK12GameDataFile34isAlreadyShowExplainCheckpointFlagEv">();
     refreshPurpsHook.installAtSym<
         "_ZN16GameDataFunction16isGotCoinCollectE22GameDataHolderAccessorRKN2al13ActorInitInfoE">();
     doorRefreshHook.installAtSym<"_ZN14DoorAreaChange4initERKN2al13ActorInitInfoE">();
@@ -362,6 +400,9 @@ void SettingsHooks::installSettingsHooks() {
     worldTravelingHook2
         .installAtSym<"_ZN16GameDataFunction27isFirstWorldTravelingStatusEPK17WorldTravelingNpc">();
     toadRefreshHook.installAtSym<"_ZN2rs34isOnFlagKinopioBrigadeNpcFirstTalkEPKN2al9LiveActorE">();
+    hintToadRefreshHook.installAtSym<"_ZN2rs24isOnFlagHintNpcFirstTalkEPKN2al9LiveActorE">();
+    musicToadRefreshHook.installAtSym<"_ZN2rs19isTalkCollectBgmNpcEPKN2al9LiveActorE">();
+    peachRefreshHook.installAtSym<"_ZN2rs25isTalkWorldTravelingPeachEPKN2al9LiveActorE">();
     coinStackRefreshHook.installAtSym<"_ZN2rs13saveCoinStackEPKN2al9LiveActorEPKNS0_11PlacementIdEi">();
     kingdomEnterHook.installAtSym<"_ZNK16GameProgressData16isAlreadyGoWorldEi">();
 }

@@ -1,4 +1,4 @@
-#include "ImGui.h"
+#include "BttImGui.h"
 
 #include "hk/diag/diag.h"
 #include "hk/gfx/ImGuiBackendNvn.h"
@@ -7,6 +7,7 @@
 #include "nn/oe.h"
 
 #include "helpers/InputHelper.h"
+#include "helpers/fsHelper.h"
 #include "imgui.h"
 #include "imgui_hid_mappings.h"
 #include "menu/Menu.h"
@@ -25,6 +26,16 @@ void init(sead::Heap* heap) {
           [](void* ptr) -> void { sImHeap->free(ptr); } }
     );
     imgui->tryInitialize();
+
+    if (FsHelper::isFileExist("content:/ImGuiData/Fonts/RodinNTLG-Bold.otf")) {
+        FsHelper::LoadData loadData = { .path = "content:/ImGuiData/Fonts/RodinNTLG-Bold.otf" };
+        FsHelper::loadFileFromPath(loadData, heap);
+        if (loadData.buffer && loadData.bufSize > 0) {
+            ImGuiIO& io = ImGui::GetIO();
+            io.Fonts->AddFontFromMemoryTTF(loadData.buffer, (int)loadData.bufSize, 40.0f);
+            imgui->initTexture(true);
+        }
+    }
 
     InputHelper::initKBM();
     InputHelper::setPort(0); // set input helpers default port to zero
@@ -82,7 +93,7 @@ void updateInput() {
 
     if (nn::oe::GetOperationMode() == nn::oe::OperationMode_Handheld) updateTouch(io);
 
-    if (InputHelper::isInputToggled() && btt::Menu::instance()->mIsEnabledMenu) updateGamepad(io);
+    if (btt::Menu::instance()->mIsEnabledMenu) updateGamepad(io);
 }
 
 void addDrawFunc(ProcDrawFunc func) {

@@ -11,6 +11,8 @@
 
 #include "imgui.h"
 #include "src/settings/SettingsMgr.h"
+#include "menu/MenuComponent.h"
+#include <vector>
 
 class WorldTravelingNpc;
 
@@ -20,6 +22,28 @@ class Menu {
     SEAD_SINGLETON_DISPOSER(Menu)
 
 public:
+    constexpr static int sCategorySpacing = 6;
+    constexpr static int sCategoryFontSize = 38;
+
+    struct Category {
+        const char* name;
+        std::vector<MenuComponent*> components;
+    };
+
+    Category mCategories[8];
+    bool mCategoriesInitialized = false;
+
+    void initCategories();
+    void drawExpandedCategory();
+    int getCategoryHeight(int id);
+    void updateMenuInput();
+
+    int mCurrentCategory = 0;
+    int mCurrentComponentInCategory = 0;
+    bool mIsExpandedCurrentCategory = false;
+    bool mIsFocusedOnCurrentComponent = false;
+    ImVec2 mBgSize = ImVec2(0, 0);
+
     Menu() = default;
     void draw();
     void handleAlways();
@@ -34,6 +58,9 @@ public:
     const char* getMoonRefreshText();
     void hideMenu();
     void showMenu();
+    void restartScene();
+    void triggerReloadPos();
+    void applyOutfit();
 
 public:
     struct TpState {
@@ -47,9 +74,18 @@ public:
 
     bool mIsEnableNoclip = false;
     bool noGetPlayer = false;
-    bool mIsEnabledMenu = true;
+    bool mIsEnabledMenu = false;
     WorldTravelingNpc* mWorldTravelingNpc = nullptr;
     const char* mWorldTravelingStatus = nullptr;
+
+    void setPopupText(const char* fmt, ...) {
+        va_list args;
+        va_start(args, fmt);
+        vsnprintf(popupText, sizeof(popupText), fmt, args);
+        va_end(args);
+        mIsPopup = true;
+        popupTimer = 0;
+    }
 
 private:
     void drawPageOptions();
@@ -65,16 +101,8 @@ private:
     void handleHotkeys();
     void handlePopup();
 
-    void setPopupText(const char* fmt, ...) {
-        va_list args;
-        va_start(args, fmt);
-        vsnprintf(popupText, sizeof(popupText), fmt, args);
-        va_end(args);
-        mIsPopup = true;
-        popupTimer = 0;
-    }
-
     bool isHotkey(SettingsMgr::SettingsHotkey key);
+    bool isTpKey(SettingsMgr::TpKey key);
 
     ImVec2 getCornerPos(int corner);
 
@@ -100,6 +128,9 @@ private:
     bool isEnablePlayerInfo = false;
     bool mIsReloadPos = false;
     int reloadPosTimer = -1;
+    StageScene* mReloadOldScene = nullptr;
+    int mReloadState = 0;
+    int mCancelCameraInterpoleFrames = 0;
     int mSelectedBody = 0;
     int mSelectedCap = 0;
     int tpIndex = 0;
@@ -126,6 +157,28 @@ private:
     };
     constexpr static const char* MenuKeys[] { "LStick",     "RStick",    "L + DLeft",
                                               "L + DRight", "R + DLeft", "R + DRight" };
+    constexpr static const char* TpKeys[] {
+        "D-Pad Left",
+        "D-Pad Right",
+        "D-Pad Down",
+        "D-Pad Up",
+        "L + D-Pad Left",
+        "L + D-Pad Right",
+        "L + D-Pad Down",
+        "L + D-Pad Up",
+        "ZL + D-Pad Left",
+        "ZL + D-Pad Right",
+        "ZL + D-Pad Down",
+        "ZL + D-Pad Up",
+        "R + D-Pad Left",
+        "R + D-Pad Right",
+        "LStick",
+        "RStick",
+        "L + LStick",
+        "L + RStick",
+        "ZL + ZR",
+        "Disabled",
+    };
 
     constexpr static const char* bodyNames[] = {
         "Mario",          "Mario64",         "Mario64Metal",      "MarioAloha",

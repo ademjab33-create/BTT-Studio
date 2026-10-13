@@ -6,7 +6,8 @@
 
 #define HOOK_CALLBACK(NAME)                                                                                  \
     inline HkTrampoline NAME = [](TrampolineStatic(), void* thisPtr) -> bool {                               \
-        if (btt::SettingsMgr::instance()->getSettings()->mIsEnableAlwaysManualCutscene) return true;         \
+        auto* settings = btt::SettingsMgr::instance()->getSettings();                                         \
+        if (settings && (settings->mIsEnableAlwaysManualCutscene || settings->mIsEnableRefreshNpc)) return true; \
         return orig(thisPtr);                                                                                \
     };
 

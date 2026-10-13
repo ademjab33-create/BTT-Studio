@@ -17,12 +17,16 @@
 #include "imgui.h"
 #include "menu/Menu.h"
 #include "src/settings/SettingsMgr.h"
+#include "settings/LuigiPixels.h"
 
 using namespace btt;
 using Hotkey = SettingsMgr::SettingsHotkey;
 
 void Menu::drawPageHotkeys() {
     if (ImGui::CollapsingHeader("Hotkeys")) {
+        int savePosKey = (u8)set->getSettings()->mSavePosKey;
+        int loadPosKey = (u8)set->getSettings()->mLoadPosKey;
+        int restartKey = (u8)set->getSettings()->mRestartSceneKey;
         static int killKey = (u8)set->getSettings()->mKillSceneKey;
         static int healKey = (u8)set->getSettings()->mHealMarioKey;
         static int lifeupKey = (u8)set->getSettings()->mLifeUpKey;
@@ -39,10 +43,14 @@ void Menu::drawPageHotkeys() {
         static int timerResetKey = (u8)set->getSettings()->mTimerResetKey;
 
         ImGui::Indent();
-        ImGui::Text("Usage: Hold Hotkey + Press DPad-Up");
+        ImGui::Text("Usage: Hold Hotkey + Press DPad-Up (or custom for Pos/Restart)");
         ImGui::PushItemWidth(200);
-        if (ImGui::Combo("Kill Scene##Key", &killKey, Keys, IM_ARRAYSIZE(Keys)))
-            set->getSettings()->mKillSceneKey = (Hotkey)killKey;
+        if (ImGui::Combo("Save Position##Key", &savePosKey, TpKeys, IM_ARRAYSIZE(TpKeys)))
+            set->getSettings()->mSavePosKey = (SettingsMgr::TpKey)savePosKey;
+        if (ImGui::Combo("Load Position##Key", &loadPosKey, TpKeys, IM_ARRAYSIZE(TpKeys)))
+            set->getSettings()->mLoadPosKey = (SettingsMgr::TpKey)loadPosKey;
+        if (ImGui::Combo("Restart Scene##Key", &restartKey, TpKeys, IM_ARRAYSIZE(TpKeys)))
+            set->getSettings()->mRestartSceneKey = (SettingsMgr::TpKey)restartKey;
         if (ImGui::Combo("Heal Mario##Key", &healKey, Keys, IM_ARRAYSIZE(Keys)))
             set->getSettings()->mHealMarioKey = (Hotkey)healKey;
 
@@ -76,8 +84,68 @@ void Menu::drawPageHotkeys() {
     }
 }
 
+bool Menu::isTpKey(SettingsMgr::TpKey key) {
+    if (mIsEnabledMenu || key == SettingsMgr::TpKey::Disabled) return false;
+
+    bool L = InputHelper::isHoldL();
+    bool R = InputHelper::isHoldR();
+    bool ZL = InputHelper::isHoldZL();
+    bool ZR = InputHelper::isHoldZR();
+
+    switch (key) {
+    case SettingsMgr::TpKey::DLeft:
+        return InputHelper::isPressPadLeft() && !L && !R && !ZL && !ZR;
+    case SettingsMgr::TpKey::DRight:
+        return InputHelper::isPressPadRight() && !L && !R && !ZL && !ZR;
+    case SettingsMgr::TpKey::DDown:
+        return InputHelper::isPressPadDown() && !L && !R && !ZL && !ZR;
+    case SettingsMgr::TpKey::DUp:
+        return InputHelper::isPressPadUp() && !L && !R && !ZL && !ZR;
+
+    case SettingsMgr::TpKey::L_DLeft:
+        return InputHelper::isPressPadLeft() && L && !R && !ZL && !ZR;
+    case SettingsMgr::TpKey::L_DRight:
+        return InputHelper::isPressPadRight() && L && !R && !ZL && !ZR;
+    case SettingsMgr::TpKey::L_DDown:
+        return InputHelper::isPressPadDown() && L && !R && !ZL && !ZR;
+    case SettingsMgr::TpKey::L_DUp:
+        return InputHelper::isPressPadUp() && L && !R && !ZL && !ZR;
+
+    case SettingsMgr::TpKey::ZL_DLeft:
+        return InputHelper::isPressPadLeft() && ZL && !L && !R && !ZR;
+    case SettingsMgr::TpKey::ZL_DRight:
+        return InputHelper::isPressPadRight() && ZL && !L && !R && !ZR;
+    case SettingsMgr::TpKey::ZL_DDown:
+        return InputHelper::isPressPadDown() && ZL && !L && !R && !ZR;
+    case SettingsMgr::TpKey::ZL_DUp:
+        return InputHelper::isPressPadUp() && ZL && !L && !R && !ZR;
+
+    case SettingsMgr::TpKey::R_DLeft:
+        return InputHelper::isPressPadLeft() && R && !L && !ZL && !ZR;
+    case SettingsMgr::TpKey::R_DRight:
+        return InputHelper::isPressPadRight() && R && !L && !ZL && !ZR;
+
+    case SettingsMgr::TpKey::LStick:
+        return InputHelper::isPressStickL() && !L && !R && !ZL && !ZR;
+    case SettingsMgr::TpKey::RStick:
+        return InputHelper::isPressStickR() && !L && !R && !ZL && !ZR;
+
+    case SettingsMgr::TpKey::L_LStick:
+        return InputHelper::isPressStickL() && L && !R && !ZL && !ZR;
+    case SettingsMgr::TpKey::L_RStick:
+        return InputHelper::isPressStickR() && L && !R && !ZL && !ZR;
+
+    case SettingsMgr::TpKey::ZL_ZR:
+        return (ZL && InputHelper::isPressZR()) || (ZR && InputHelper::isPressZL());
+
+    default:
+        return false;
+    }
+}
+
 bool Menu::isHotkey(Hotkey key) {
-    bool isAllowInput = !InputHelper::isInputToggled() || !mIsEnabledMenu;
+    if (mIsEnabledMenu) return false;
+    bool isAllowInput = true;
     bool Up = InputHelper::isPressPadUp();
     bool L = InputHelper::isHoldL();
     bool R = InputHelper::isHoldR();
@@ -98,71 +166,95 @@ bool Menu::isHotkey(Hotkey key) {
     }
 }
 
-void Menu::handleHotkeys() {
-    bool isAllowTP =
-        set->getSettings()->mIsEnableTpHotkeys && (!InputHelper::isInputToggled() || !mIsEnabledMenu);
+void Menu::triggerReloadPos() {
+    if (!stageScene || !playerHak || !gameSeq) return;
 
-    if (InputHelper::isPressPadLeft() && isAllowTP) {
-        saveTeleport(tpStates[tpIndex]);
-    } else if (InputHelper::isPressPadRight() && isAllowTP) {
-        loadTeleport(tpStates[tpIndex]);
-    }
+    GameDataFunction::recoveryPlayer(playerHak);
+    GameDataFunction::recoveryPlayer(playerHak);
+    LuigiPixels::resetDiscoveredSpots();
 
-    if (isHotkey(set->getSettings()->mKillSceneKey)) {
-        if (stageScene && playerHak) {
-            al::NerveKeeper* sceneNerveKeeper = stageScene->getNerveKeeper();
-            char* stateName = nullptr;
-            char* stateNrvName = nullptr;
-            char* stateNrvNameShort = nullptr;
-            char* stateNameShort = nullptr;
-            bool cmpNrv = false;
-            bool cmpState = false;
+    reloadStagePos = al::getTrans(playerHak);
+    reloadStageQuat = al::getQuat(playerHak);
+    mReloadOldScene = stageScene;
+    mReloadState = 1;
+    reloadPosTimer = 0;
 
-            if (sceneNerveKeeper->mStateCtrl) {
-                al::NerveStateCtrl::State* state = sceneNerveKeeper->mStateCtrl->mCurrentState;
+    ChangeStageInfo info = ChangeStageInfo(
+        gameSeq->mGameDataHolderAccessor, "",
+        GameDataFunction::getCurrentStageName(gameSeq->mGameDataHolderAccessor), false,
+        -1, ChangeStageInfo::SubScenarioType::NO_SUB_SCENARIO
+    );
+    gameSeq->mGameDataHolderAccessor.mData->changeNextStage(&info, 0);
+}
 
-                if (state) {
-                    const al::Nerve* stateNerve = state->state->getNerveKeeper()->getCurrentNerve();
-                    int status;
-                    stateName = abi::__cxa_demangle(typeid(*state->state).name(), nullptr, nullptr, &status);
-                    stateNameShort = stateName + strlen("StageSceneState");
+void Menu::restartScene() {
+    if (!stageScene || !playerHak) return;
+    al::NerveKeeper* sceneNerveKeeper = stageScene->getNerveKeeper();
+    if (!sceneNerveKeeper) return;
 
-                    if (stateName) {
-                        stateNrvName =
-                            abi::__cxa_demangle(typeid(*stateNerve).name(), nullptr, nullptr, &status);
+    char* stateName = nullptr;
+    char* stateNrvName = nullptr;
+    char* stateNrvNameShort = nullptr;
+    char* stateNameShort = nullptr;
+    bool cmpNrv = false;
+    bool cmpState = false;
 
-                        if (stateNrvName) {
-                            auto prefixLen2 = stateNrvName[0] == '(' ? strlen("(anonymous namespace)::") : 0;
-                            stateNrvNameShort = stateNrvName + prefixLen2 + strlen(stateName) + strlen("nrv");
+    if (sceneNerveKeeper->mStateCtrl) {
+        al::NerveStateCtrl::State* state = sceneNerveKeeper->mStateCtrl->mCurrentState;
 
-                            cmpNrv = strcmp(stateNrvNameShort, "SkipDemo") == 0 ||
-                                     strcmp(stateNrvNameShort, "Skip") == 0;
-                            cmpState = strcmp(stateNameShort, "PauseMenu") == 0 ||
-                                       strcmp(stateNameShort, "SnapShot") == 0;
-                        }
-                    }
-                }
-                if (stateNrvName) free(stateNrvName);
-                if (stateName) free(stateName);
-                if (!(cmpNrv || cmpState || PlayerFunction::isPlayerDeadStatus(playerHak))) {
-                    if (mIsReloadPos) {
-                        reloadPosTimer = 0;
-                        if (playerHak) {
-                            reloadStagePos = al::getTrans(playerHak);
-                            reloadStageQuat = al::getQuat(playerHak);
-                        }
-                        ChangeStageInfo info = ChangeStageInfo(
-                            gameSeq->mGameDataHolderAccessor, "",
-                            GameDataFunction::getCurrentStageName(gameSeq->mGameDataHolderAccessor), false,
-                            -1, ChangeStageInfo::SubScenarioType::NO_SUB_SCENARIO
-                        );
-                        gameSeq->mGameDataHolderAccessor.mData->changeNextStage(&info, 0);
-                    } else {
-                        stageScene->kill();
-                    }
+        if (state) {
+            const al::Nerve* stateNerve = state->state->getNerveKeeper()->getCurrentNerve();
+            int status;
+            stateName = abi::__cxa_demangle(typeid(*state->state).name(), nullptr, nullptr, &status);
+            stateNameShort = stateName + strlen("StageSceneState");
+
+            if (stateName) {
+                stateNrvName =
+                    abi::__cxa_demangle(typeid(*stateNerve).name(), nullptr, nullptr, &status);
+
+                if (stateNrvName) {
+                    auto prefixLen2 = stateNrvName[0] == '(' ? strlen("(anonymous namespace)::") : 0;
+                    stateNrvNameShort = stateNrvName + prefixLen2 + strlen(stateName) + strlen("nrv");
+
+                    cmpNrv = strcmp(stateNrvNameShort, "SkipDemo") == 0 ||
+                             strcmp(stateNrvNameShort, "Skip") == 0;
+                    cmpState = strcmp(stateNameShort, "PauseMenu") == 0 ||
+                               strcmp(stateNameShort, "SnapShot") == 0;
                 }
             }
         }
+        if (stateNrvName) free(stateNrvName);
+        if (stateName) free(stateName);
+        if (!(cmpNrv || cmpState || PlayerFunction::isPlayerDeadStatus(playerHak))) {
+            GameDataFunction::recoveryPlayer(playerHak);
+            GameDataFunction::recoveryPlayer(playerHak);
+            LuigiPixels::resetDiscoveredSpots();
+
+            if (mIsReloadPos) {
+                triggerReloadPos();
+            } else {
+                stageScene->kill();
+            }
+        }
+    }
+}
+
+void Menu::handleHotkeys() {
+    if (mIsEnabledMenu) return;
+
+    bool isAllowTP = set->getSettings()->mIsEnableTpHotkeys;
+
+    if (isAllowTP) {
+        if (isTpKey(set->getSettings()->mSavePosKey)) {
+            saveTeleport(tpStates[tpIndex]);
+        } else if (isTpKey(set->getSettings()->mLoadPosKey)) {
+            loadTeleport(tpStates[tpIndex]);
+        }
+    }
+
+    if (isTpKey(set->getSettings()->mRestartSceneKey) ||
+        isHotkey(set->getSettings()->mKillSceneKey)) {
+        restartScene();
     }
     if (isHotkey(set->getSettings()->mHealMarioKey)) {
         if (playerHak) GameDataFunction::recoveryPlayer(playerHak);

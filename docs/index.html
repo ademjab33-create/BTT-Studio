@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BTT Studio — Practice Mod 1.0 (Super Mario Odyssey)</title>
+  <meta name="description" content="Découvrez BTT Studio Practice Mod 1.0 pour Super Mario Odyssey : l'outil d'entraînement ultime combinant le moteur 1.0.0 avec l'interface graphique verticale moderne de la 1.3, caméra instantanée, Input Display RGB Multicolor et bien plus.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="navbar">
+    <a href="#" class="brand">
+      <div class="brand-icon">B</div>
+      <div class="brand-title">BTT Studio <span class="brand-badge">v1.0 Update</span></div>
+    </a>
+    <nav class="nav-links">
+      <a href="#showcase">Input Display</a>
+      <a href="#features">Nouveautés</a>
+      <a href="#comparison">Comparatif</a>
+      <a href="#installation">Installation</a>
+      <a href="#keybinds">Raccourcis</a>
+      <a href="https://github.com/MrKatzenGaming/BTT-Studio" target="_blank" class="btn-nav-github">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+        </svg>
+        GitHub
+      </a>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-pill">
+        <span class="pulse-dot"></span>
+        Mise à jour majeure — SMO 1.0.0 avec l'UI 1.3
+      </div>
+      <h1>
+        L'outil d'entraînement ultime pour <br>
+        <span class="gradient-text">Super Mario Odyssey</span>
+      </h1>
+      <p class="lead">
+        Découvrez la fusion parfaite entre toutes les mécaniques et glitchs natifs de <strong>SMO 1.0.0</strong> et la superbe interface translucide du <strong>Practice Mod 1.3</strong> : caméra instantanée, Input Display RGB libre, rechargement à la position et détection 3D des Pixel Luigi.
+      </p>
+      <div class="hero-cta">
+        <a href="#installation" class="btn-primary">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          Installer le Mod v1.0
+        </a>
+        <a href="#showcase" class="btn-secondary">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          Tester l'Input Display en direct
+        </a>
+      </div>
+
+      <div class="hero-badges-row">
+        <div class="badge-chip">
+          <span>🎮</span> Title ID: <strong>0100000000010000</strong>
+        </div>
+        <div class="badge-chip">
+          <span>⚡</span> SMO Version: <strong>1.0.0</strong>
+        </div>
+        <div class="badge-chip">
+          <span>✨</span> Module Binaire: <strong>subsdk4 (~598 Ko)</strong>
+        </div>
+        <div class="badge-chip">
+          <span>💻</span> Émulateur: <strong>Yuzu Compatible</strong>
+        </div>
+        <div class="badge-chip">
+          <span>🕹️</span> Console: <strong>Atmosphere CFW</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Input Display Showcase -->
+  <section class="interactive-showcase" id="showcase">
+    <div class="container">
+      <div class="showcase-card">
+        <div class="showcase-header">
+          <h2>Simulateur d'Input Display Interactif</h2>
+          <p>Glissez la manette à la souris pour tester le déplacement libre, ou activez l'effet <strong>Multicolor (RGB Wave)</strong> en temps réel !</p>
+        </div>
+
+        <div class="demo-grid">
+          <!-- Canvas stage area -->
+          <div class="stage-canvas-area" id="stageCanvas">
+            <div class="stage-hint">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+              <span>Cliquez et glissez le contrôleur n'importe où !</span>
+              <span id="currentCoordinates" style="margin-left:auto; color:#38bdf8; font-family:var(--font-mono);">X: 520 | Y: 65</span>
+            </div>
+
+            <!-- Controller Elements -->
+            <div class="interactive-controller" id="interactiveController">
+              <div class="controller-bg"></div>
+
+              <!-- Triggers -->
+              <div class="ctrl-rect" style="top: 24px; left: 15px;" title="ZL"></div>
+              <div class="ctrl-rect" style="top: 40px; left: 15px;" title="L"></div>
+              <div class="ctrl-rect" style="top: 24px; left: 170px;" title="ZR"></div>
+              <div class="ctrl-rect" style="top: 40px; left: 170px;" title="R"></div>
+
+              <!-- Sticks -->
+              <div class="ctrl-stick-ring" style="top: 100px; left: 20px;">
+                <div class="ctrl-stick"></div>
+              </div>
+
+              <div class="ctrl-stick-ring" style="top: 130px; left: 120px;">
+                <div class="ctrl-stick"></div>
+              </div>
+
+              <!-- D-Pad -->
+              <div class="ctrl-btn" style="top: 135px; left: 80px; width:16px; height:16px;" title="D-Up"></div>
+              <div class="ctrl-btn" style="top: 165px; left: 80px; width:16px; height:16px;" title="D-Down"></div>
+              <div class="ctrl-btn" style="top: 150px; left: 65px; width:16px; height:16px;" title="D-Left"></div>
+              <div class="ctrl-btn" style="top: 150px; left: 95px; width:16px; height:16px;" title="D-Right"></div>
+
+              <!-- Buttons A, B, X, Y -->
+              <div class="ctrl-btn" style="top: 85px; left: 195px; width:16px; height:16px;" title="X"></div>
+              <div class="ctrl-btn" style="top: 115px; left: 195px; width:16px; height:16px;" title="B"></div>
+              <div class="ctrl-btn" style="top: 100px; left: 180px; width:16px; height:16px;" title="Y"></div>
+              <div class="ctrl-btn" style="top: 100px; left: 210px; width:16px; height:16px;" title="A"></div>
+
+              <!-- Plus & Minus -->
+              <div class="ctrl-btn" style="top: 90px; left: 85px; width:10px; height:10px;" title="Minus"></div>
+              <div class="ctrl-btn" style="top: 90px; left: 125px; width:10px; height:10px;" title="Plus"></div>
+            </div>
+          </div>
+
+          <!-- Controls side panel -->
+          <div class="demo-controls-panel">
+            <div class="panel-group">
+              <span class="panel-label">Effet Spécial</span>
+              <button class="multicolor-special-btn" id="toggleMulticolorBtn">
+                ✨ Activer Multicolor (RGB Rainbow)
+              </button>
+            </div>
+
+            <div class="panel-group">
+              <span class="panel-label">Presets de position (Coins & Centre)</span>
+              <div class="preset-buttons">
+                <button class="preset-btn active" data-preset="center">Centre</button>
+                <button class="preset-btn" data-preset="bottom-left">Bas Gauche</button>
+                <button class="preset-btn" data-preset="bottom-right">Bas Droite</button>
+                <button class="preset-btn" data-preset="top-left">Haut Gauche</button>
+                <button class="preset-btn" data-preset="top-right">Haut Droite</button>
+              </div>
+            </div>
+
+            <div class="panel-group">
+              <span class="panel-label">Couleur des Boutons</span>
+              <div class="color-picker-row">
+                <button class="color-option-btn selected" data-type="button" data-color="#ffffff" style="background:#ffffff;"></button>
+                <button class="color-option-btn" data-type="button" data-color="#eb4034" style="background:#eb4034;"></button>
+                <button class="color-option-btn" data-type="button" data-color="#343aeb" style="background:#343aeb;"></button>
+                <button class="color-option-btn" data-type="button" data-color="#ebd234" style="background:#ebd234;"></button>
+                <button class="color-option-btn" data-type="button" data-color="#3aeb34" style="background:#3aeb34;"></button>
+                <button class="color-option-btn" data-type="button" data-color="#e134eb" style="background:#e134eb;"></button>
+              </div>
+            </div>
+
+            <div class="panel-group">
+              <span class="panel-label">Couleur quand Pressé</span>
+              <div class="color-picker-row">
+                <button class="color-option-btn selected" data-type="pressed" data-color="#e134eb" style="background:#e134eb;"></button>
+                <button class="color-option-btn" data-type="pressed" data-color="#eb4034" style="background:#eb4034;"></button>
+                <button class="color-option-btn" data-type="pressed" data-color="#3aeb34" style="background:#3aeb34;"></button>
+                <button class="color-option-btn" data-type="pressed" data-color="#00c3ff" style="background:#00c3ff;"></button>
+              </div>
+            </div>
+
+            <div class="panel-group">
+              <span class="panel-label">Fond de la Manette (BG Color)</span>
+              <div class="color-picker-row">
+                <button class="color-option-btn selected" data-type="bg" data-color="rgba(0,0,0,0.55)" style="background:#111;"></button>
+                <button class="color-option-btn" data-type="bg" data-color="rgba(52,58,235,0.4)" style="background:#343aeb;"></button>
+                <button class="color-option-btn" data-type="bg" data-color="rgba(235,64,52,0.4)" style="background:#eb4034;"></button>
+                <button class="color-option-btn" data-type="bg" data-color="transparent" style="border:1px dashed #666;"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Grid -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-title-wrap">
+        <h2>Toutes les Fonctionnalités du Practice Mod 1.0</h2>
+        <p>Un ensemble complet de correctifs, d'outils d'entraînement et d'optimisations pensés pour les speedrunners les plus exigeants.</p>
+      </div>
+
+      <div class="feature-cards-grid">
+        <!-- Feature 1 -->
+        <div class="feature-card">
+          <div class="card-icon">🎥</div>
+          <h3>Caméra Instantanée sur Load Pos</h3>
+          <p>Annulation immédiate de l'interpolation de la caméra (<code>al::requestCancelCameraInterpole</code>) sur Mario et la scène avec boucle de 10 frames.</p>
+          <ul>
+            <li>Verrouillage instantané sur Mario à la première frame</li>
+            <li>Vitesse résiduelle remise à zéro (aucune inertie parasite)</li>
+            <li>Support complet des captures / transformations (Grenouille, Goomba, etc.)</li>
+          </ul>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="feature-card">
+          <div class="card-icon">🌈</div>
+          <h3>Input Display Libre & Multicolor</h3>
+          <p>Affichage dynamique de la manette entièrement personnalisable à l'écran.</p>
+          <ul>
+            <li><strong>Drag & Drop</strong> à la souris ou au tactile directement sur l'écran</li>
+            <li>Presets de 4 coins et réglage fin par pas de 25 pixels</li>
+            <li>Couleur <strong>Multicolor (RGB Rainbow)</strong> avec onde fluide animée</li>
+            <li>Support complet du mode 2 Joueurs (P1 & P2 indépendants)</li>
+          </ul>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="feature-card">
+          <div class="card-icon">🔄</div>
+          <h3>Reload at Pos / Instant Reload</h3>
+          <p>Recharge la scène complète tout en replaçant Mario exactement à ses coordonnées et rotation actuelles.</p>
+          <ul>
+            <li>Option « Reload at Pos » (Yes/No) dans Misc et Options</li>
+            <li>Bouton d'action directe « Restart at Pos »</li>
+            <li>Machine d'état robuste anti-désynchronisation (<code>mReloadState</code>)</li>
+            <li>Restauration automatique des PV et passage des cinématiques</li>
+          </ul>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="feature-card">
+          <div class="card-icon">🪙</div>
+          <h3>18 Pixel Luigi 3D SMB1 Fidèles</h3>
+          <p>Les 18 emplacements secrets officiels reproduits à 100% à l'identique de la vidéo originale <code>1011.mp4</code>.</p>
+          <ul>
+            <li>Impact au sol avec onde de choc et saut acrobatique en cloche</li>
+            <li>Plaquage au sol horizontal, rebond et flèche ⬇ indicatrice</li>
+            <li>2 pièces d'or géantes 3D en rotation avec étincelles rétro</li>
+            <li>Réinitialisation propre au Restart Scene (+200 pièces garanties)</li>
+          </ul>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="feature-card">
+          <div class="card-icon">🔒</div>
+          <h3>Blocage des Entrées en Menu</h3>
+          <p>Lorsque le menu vertical est ouvert, toutes les touches de la manette et des sticks sont isolées du moteur de jeu.</p>
+          <ul>
+            <li>Mario reste parfaitement immobile lors de la navigation</li>
+            <li>Aucun saut, coup de caméra ou coup de Cappy accidentel</li>
+            <li>Protection contre les déclenchements de raccourcis dans le menu</li>
+          </ul>
+        </div>
+
+        <!-- Feature 6 -->
+        <div class="feature-card">
+          <div class="card-icon">🎩</div>
+          <h3>Sélecteur d'Outfits (42 Tenues)</h3>
+          <p>Changez instantanément d'apparence sans passer par la boutique Crazy Cap.</p>
+          <ul>
+            <li>Sélecteur « Outfit Body » (42 tenues complètes de SMO)</li>
+            <li>Sélecteur « Outfit Cap » (42 chapeaux différents)</li>
+            <li>Bouton « Apply Outfit » qui recharge Mario vêtu de son nouvel ensemble</li>
+          </ul>
+        </div>
+
+        <!-- Feature 7 -->
+        <div class="feature-card">
+          <div class="card-icon">⚡</div>
+          <h3>Speedrun Refreshes Intégrés</h3>
+          <p>Tous les commutateurs d'entraînement pour réinitialiser les éléments du monde :</p>
+          <ul>
+            <li><strong>Cutscene Refresh :</strong> réactive les cinématiques et dialogues PNJ (Capitaine Toad, Hint Toad, Jammin' Toad, Traveling Peach)</li>
+            <li><strong>Warp Text Refresh :</strong> réactive les explications de téléportation par checkpoint</li>
+            <li><strong>Doors, Moon Shards, Purple Coins & Gray Moons :</strong> respawn complet</li>
+          </ul>
+        </div>
+
+        <!-- Feature 8 -->
+        <div class="feature-card">
+          <div class="card-icon">🎮</div>
+          <h3>Menu Vertical Translucide Rodin 1.3</h3>
+          <p>L'ergonomie moderne et élégante du Practice Mod 1.3 adaptée aux fonctions natives 1.0.</p>
+          <ul>
+            <li>8 catégories organisées : Options, Stages, Misc, Timer, Input Display, Keybinds, Info, Settings</li>
+            <li>Police officielle Rodin blanche haute résolution</li>
+            <li>Raccourcis rapides D-Pad (Sauvegarde, Chargement, Kill Scene)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison Section -->
+  <section class="comparison" id="comparison">
+    <div class="container">
+      <div class="section-title-wrap">
+        <h2>Comparatif des Versions</h2>
+        <p>Pourquoi le Practice Mod 1.0 (BTT Studio Edition) est le choix parfait pour les routes de speedrun Any% et 100%.</p>
+      </div>
+
+      <div class="table-card">
+        <table class="comp-table">
+          <thead>
+            <tr>
+              <th>Fonctionnalité</th>
+              <th>SMO Vanilla</th>
+              <th>Practice Mod 1.3</th>
+              <th>BTT Studio 1.0 (Cette version)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="feature-col">Version du jeu Super Mario Odyssey</td>
+              <td>1.0.0 à 1.3.0</td>
+              <td>SMO 1.3.0 uniquement</td>
+              <td><span class="badge-tag-highlight">SMO 1.0.0 (Idéal Speedrun)</span></td>
+            </tr>
+            <tr>
+              <td class="feature-col">Glitchs 1.0 (First Person Glitch, etc.)</td>
+              <td>Oui (en 1.0)</td>
+              <td>❌ Patché en 1.3</td>
+              <td><span class="badge-tag-highlight">✅ Disponibles à 100%</span></td>
+            </tr>
+            <tr>
+              <td class="feature-col">Interface Graphique (UI)</td>
+              <td>Aucune</td>
+              <td>Menu vertical translucide Rodin</td>
+              <td><span class="badge-tag-highlight">✅ Menu vertical translucide Rodin</span></td>
+            </tr>
+            <tr>
+              <td class="feature-col">Caméra instantanée sur Load Position</td>
+              <td>Non</td>
+              <td>Glissement léger</td>
+              <td><span class="badge-tag-highlight">✅ Instantané (0 frame lag)</span></td>
+            </tr>
+            <tr>
+              <td class="feature-col">Input Display Mobile (Drag & Drop + Presets)</td>
+              <td>Non</td>
+              <td>Position fixe</td>
+              <td><span class="badge-tag-highlight">✅ Drag & Drop souris + Presets coins</span></td>
+            </tr>
+            <tr>
+              <td class="feature-col">Couleur Multicolor RGB Wave</td>
+              <td>Non</td>
+              <td>Non</td>
+              <td><span class="badge-tag-highlight">✅ Dynamique HSV Chroma</span></td>
+            </tr>
+            <tr>
+              <td class="feature-col">Rechargement à la position (Reload at Pos)</td>
+              <td>Non</td>
+              <td>Non</td>
+              <td><span class="badge-tag-highlight">✅ Option & Bouton dédiés</span></td>
+            </tr>
+            <tr>
+              <td class="feature-col">18 Pixel Luigi avec animation 1011.mp4</td>
+              <td>Non (uniquement 1.2+)</td>
+              <td>Objets natifs</td>
+              <td><span class="badge-tag-highlight">✅ Rendu 3D complet + 200 pièces</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Installation Guide -->
+  <section class="installation" id="installation">
+    <div class="container">
+      <div class="section-title-wrap">
+        <h2>Téléchargements & Installation</h2>
+        <p>Téléchargez le package adapté à votre configuration ou suivez le guide pas-à-pas ci-dessous.</p>
+      </div>
+
+      <!-- Direct Download Cards -->
+      <div class="download-cards-grid">
+        <div class="download-card">
+          <div class="dl-badge">PC / Émulateur</div>
+          <div class="dl-icon">💻</div>
+          <h3>Émulateur Yuzu</h3>
+          <p>Package prêt à l'emploi pour le dossier <code>load/0100000000010000/</code>.</p>
+          <div class="dl-meta">Version 1.0.0 • 4.5 Mo</div>
+          <a href="downloads/BTT-Studio-1.0-Yuzu-v1.0.0.zip" class="btn-download" download>
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            Télécharger (Yuzu)
+          </a>
+        </div>
+
+        <div class="download-card highlighted">
+          <div class="dl-badge rec">Recommandé Switch</div>
+          <div class="dl-icon">🕹️</div>
+          <h3>Simple Mod Manager</h3>
+          <p>Prêt à glisser-déposer directement dans <code>SD:/mods/</code>.</p>
+          <div class="dl-meta">Version 1.0.0 • 4.5 Mo</div>
+          <a href="downloads/BTT-Studio-1.0-SimpleModManager-v1.0.0.zip" class="btn-download primary" download>
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            Télécharger (SMM)
+          </a>
+        </div>
+
+        <div class="download-card">
+          <div class="dl-badge">CFW Manuel</div>
+          <div class="dl-icon">⚡</div>
+          <h3>Atmosphere Direct</h3>
+          <p>Arborescence <code>atmosphere/contents/</code> prête à copier à la racine SD.</p>
+          <div class="dl-meta">Version 1.0.0 • 4.5 Mo</div>
+          <a href="downloads/BTT-Studio-1.0-Atmosphere-v1.0.0.zip" class="btn-download" download>
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            Télécharger (Atmosphere)
+          </a>
+        </div>
+      </div>
+
+      <div class="tab-nav">
+        <button class="tab-btn active" data-tab="tab-yuzu">🎮 Installation Yuzu (PC)</button>
+        <button class="tab-btn" data-tab="tab-switch">🕹️ Installation Switch (Atmosphere / SMM)</button>
+      </div>
+
+      <!-- Tab Yuzu -->
+      <div class="tab-content active" id="tab-yuzu">
+        <div class="steps-list">
+          <div class="step-item">
+            <div class="step-number">1</div>
+            <div class="step-details">
+              <h4>Emplacement du dossier de mod</h4>
+              <p>Le binaire compilé <code>subsdk4</code> et son fichier <code>main.npdm</code> sont installés dans le répertoire de mods de Yuzu :</p>
+              <div class="code-box">
+                <span>C:\Users\FlowUP\AppData\Roaming\yuzu\load\0100000000010000\Practice mod 1.0\exefs\</span>
+                <button class="copy-btn" data-copy="C:\Users\FlowUP\AppData\Roaming\yuzu\load\0100000000010000\Practice mod 1.0\exefs\">Copier</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-number">2</div>
+            <div class="step-details">
+              <h4>Activation dans Yuzu</h4>
+              <p>Dans l'interface de Yuzu, faites un clic droit sur <strong>Super Mario Odyssey</strong> &rarr; <strong>Propriétés</strong> &rarr; cochez <strong>Practice mod 1.0</strong> (veillez à décocher la version 1.3 si vous ne souhaitez pas qu'elles interfèrent).</p>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-number">3</div>
+            <div class="step-details">
+              <h4>Lancez le jeu et profitez</h4>
+              <p>Une fois dans le jeu, appuyez sur <strong>L + Flèche Gauche</strong> pour ouvrir le menu BTT Studio !</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Switch -->
+      <div class="tab-content" id="tab-switch">
+        <div class="steps-list">
+          <div class="step-item">
+            <div class="step-number">1</div>
+            <div class="step-details">
+              <h4>Méthode Simple Mod Manager (Recommandée)</h4>
+              <p>Copiez simplement le dossier <code>Practice mod 1.0</code> présent dans votre dossier de téléchargements vers le répertoire <code>/mods/</code> de votre carte SD :</p>
+              <div class="code-box">
+                <span>SD:/mods/Practice mod 1.0/contents/0100000000010000/exefs/subsdk4</span>
+                <button class="copy-btn" data-copy="/mods/Practice mod 1.0/contents/0100000000010000/exefs/subsdk4">Copier</button>
+              </div>
+              <p style="margin-top:0.5rem;">Lancez Simple Mod Manager sur votre console et activez le mod.</p>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-number">2</div>
+            <div class="step-details">
+              <h4>Méthode Atmosphere Directe</h4>
+              <p>Placez le binaire directement dans l'arborescence Atmosphere :</p>
+              <div class="code-box">
+                <span>SD:/atmosphere/contents/0100000000010000/exefs/subsdk4</span>
+                <button class="copy-btn" data-copy="/atmosphere/contents/0100000000010000/exefs/subsdk4">Copier</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Keybinds Section -->
+  <section class="features" id="keybinds" style="padding-top: 0;">
+    <div class="container">
+      <div class="section-title-wrap">
+        <h2>Raccourcis Manette & Contrôles Rapides</h2>
+        <p>Prenez le contrôle total de vos sessions d'entraînement avec des combinaisons simples et intuitives.</p>
+      </div>
+
+      <div class="keybind-grid">
+        <div class="keybind-card">
+          <span>Ouvrir / Fermer le menu</span>
+          <span class="key-tag">L + D-Pad Gauche</span>
+        </div>
+        <div class="keybind-card">
+          <span>Sauvegarder position (Save State)</span>
+          <span class="key-tag">D-Pad Gauche</span>
+        </div>
+        <div class="keybind-card">
+          <span>Recharger position (Load State)</span>
+          <span class="key-tag">D-Pad Droite</span>
+        </div>
+        <div class="keybind-card">
+          <span>Recharger la scène (Kill Scene)</span>
+          <span class="key-tag">D-Pad Haut  OU  ZL + ZR</span>
+        </div>
+        <div class="keybind-card">
+          <span>Scène précédente (Prev Stage)</span>
+          <span class="key-tag">D-Pad Bas</span>
+        </div>
+        <div class="keybind-card">
+          <span>Roue rapide d'actions</span>
+          <span class="key-tag">Maintenir R3 (Stick D)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p style="margin-bottom:0.75rem;">
+        BTT Studio Switch — Practice Mod 1.0 © 2026. Basé sur le code source de MrKatzenGaming et Practice Mod 1.3 (fruityloops1).
+      </p>
+      <p>
+        Super Mario Odyssey est une marque déposée de Nintendo. Ce mod est un projet d'ingénierie open-source destiné à l'apprentissage et au speedrun.
+      </p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

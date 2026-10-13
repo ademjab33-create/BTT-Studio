@@ -51,6 +51,7 @@ void Menu::drawPageOptions() {
             ImGui::Checkbox("Always Allow Checkpoints", &set->getSettings()->mIsEnableAlwaysCheckpoints);
             ImGui::Checkbox("Skip Cloud", &set->getSettings()->mIsEnableSkipCloud);
             ImGui::Checkbox("Enable All Checkpoints", &set->getSettings()->mIsEnableAllCheckpoints);
+            ImGui::Checkbox("Luigi Pixels", &set->getSettings()->mIsEnableLuigiPixels);
             ImGui::Checkbox("Spawn all Hint Art Moons", &set->getSettings()->mIsEnableHintPhotoSpawn);
 
             ImGui::Unindent();
