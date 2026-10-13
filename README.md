@@ -36,14 +36,14 @@ Le site officiel en ligne est disponible sur **GitHub Pages** ([https://ademjab3
 - Recharge entièrement la scène tout en replaçant Mario exactement à ses coordonnées actuelles avec vie restaurée.
 - Option toggle "Reload at Pos" (Yes/No) et bouton direct "Restart at Pos".
 
-### 🪙 4. Les 18 Pixel Luigi 3D SMB1 Authentiques
-- Reproduction 1:1 exacte de l'animation officielle (vidéo `1011.mp4`) :
-  - Onde de choc d'impact au sol
-  - Saut en cloche à 280 unités
-  - Plaquage horizontal au sol
-  - Redressement fier avec flèche ⬇ indicatrice
-  - 2 grosses pièces d'or 3D en rotation avec étincelles rétro
-  - Réinitialisation automatique au Restart Scene (+200 pièces pour vos routes).
+### 🪙 4. Le Vrai Luigi 8-bit du Jeu
+- Dans le jeu officiel, 28 buissons et touffes d'herbe (8 royaumes) ont 10 % de chance de cacher un Luigi 8-bit qui sort du sol et donne des pièces.
+- L'option « Luigi Pixels » force ce tirage à 100 % : l'animation, les pièces et les sons sont ceux du jeu.
+- Rechargez la scène après avoir activé l'option. *(en test)*
+
+### 🐰 Skip Broodals *(nouveau en v1.1, en test)*
+- Dès la fin de la cinématique d'intro, le boss est vaincu par son propre code de « dernier coup » : le jeu joue la cinématique de fin et fait apparaître la Multi-Lune.
+- Madame Broode (Chutes), Hariet (Sables), Rango (Lac), Spewart (Bois, revanche aux Gourmets). Topper n'est pas concerné.
 
 ### 🔒 5. Blocage des Entrées du Jeu en Menu
 - Mario reste immobile pendant la navigation dans le menu vertical (aucune entrée manette envoyée au jeu).
@@ -77,13 +77,14 @@ Le menu vertical translucide s'ouvre avec la combinaison **`L + D-Pad Gauche`**.
 - **Disable TP Puppet** : Supprime l'animation d'attente de Mario pendant un warp.
 - **Skip Cloud** : Passe les transitions nuageuses entre les zones.
 - **All Checkpoints** : Débloque tous les drapeaux de téléportation du niveau.
-- **Luigi Pixels** : Affiche les 18 Pixel Luigi 8-bit dans le sol (+200 pièces chacun).
+- **Luigi Pixels** : Le vrai Luigi 8-bit sort à chaque fois des buissons concernés (10 % de chance normalement).
 - **Spawn All Hint Art** : Fait apparaître tous les indices artistiques d'Hint Toad.
 - **Pipe Maze Override** : Force le passage dans les labyrinthes de tuyaux.
 - **No Checkpoint Touch** : Empêche d'activer un drapeau par erreur en le frôlant.
 - **No Damage** : Mario ne subit aucun dégât (invincibilité totale).
 - **Disable Music** : Coupe la musique pour n'entendre que les bruitages du jeu.
 - **Disable Moon Lock** : Débloque l'Odyssée sans le nombre de lunes requis.
+- **Skip Broodals** : Termine les combats de Broodals juste après leur intro et fait apparaître la Multi-Lune.
 - **Reload Scene at Pos** : Recharge tout le niveau en restant exactement à sa position.
 
 ### 🗺️ 2. Stages (Téléportation)
