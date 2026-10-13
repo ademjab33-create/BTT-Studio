@@ -56,31 +56,23 @@ Deux mods sont déployés dans `C:\Users\FlowUP\AppData\Roaming\yuzu\load\010000
 
 ## Problemes connus — Journal de suivi
 
-### RESOLU — Écosystème GitHub Complet : Showcase Pages, Workflows Actions, Packages Release & Documentation (BTT-Studio 1.0)
+### RESOLU — Écosystème GitHub Publié : Dépôt Public, Release v1.0.0 & Showcase Pages en Ligne (BTT-Studio 1.0)
 
-- **Description** : Finalisation et intégration complète de l'écosystème GitHub pour la version **v1.0.0** de BTT Studio Practice Mod 1.0 :
-  1. **Site Showcase GitHub Pages (`docs/`)** :
-     - Hébergement immédiat via GitHub Pages (`Settings > Pages > Deploy from branch > main /docs`).
-     - **Cartes de téléchargement direct en 1 clic** : Packages ZIP autonomes intégrés dans `docs/downloads/` pour Yuzu, Simple Mod Manager et Atmosphere Direct.
-     - **Simulateur d'Input Display interactif** : manette virtuelle déplaçable en drag & drop à la souris, sélecteurs de presets 4 coins, réglage des couleurs de boutons/sticks/fond, et bouton interactif **"✨ Activer Multicolor (RGB Rainbow)"** avec onde chromatique fluide.
-     - **Grille de fonctionnalités complète** : Caméra instantanée, Input Display libre & Multicolor, Instant Reload / Reload at Pos, 18 Pixel Luigi 3D SMB1 (vidéo 1011.mp4), Blocage des entrées en menu, Sélecteur d'Outfits (42 tenues), Speedrun Refreshes, et Menu vertical translucide Rodin.
-     - **Tableau comparatif détaillé** : SMO Vanilla vs Practice Mod 1.3 vs BTT Studio 1.0.
-     - **Guide d'installation pas-à-pas** et guide des raccourcis manette.
-  2. **Workflows CI/CD GitHub Actions (`.github/workflows/`)** :
-     - `deploy-pages.yml` : Déploiement automatique du showcase sur GitHub Pages à chaque commit sur `main`.
-     - `release.yml` : Publication automatique de la release GitHub officielle attachant les zips de build dès qu'un tag `v*` est poussé.
-  3. **Templates communautaires GitHub (`.github/`)** :
-     - `.github/ISSUE_TEMPLATE/bug_report.yml` : Formulaire structuré de rapport de bug.
-     - `.github/ISSUE_TEMPLATE/feature_request.yml` : Formulaire de suggestion d'amélioration.
-     - `.github/pull_request_template.md` : Checklist de test et validation pour les PRs.
-  4. **Archives ZIP de Release (`release/` & `docs/downloads/`)** :
+- **Description** : Publication officielle et intégration complète de l'écosystème GitHub sous le compte utilisateur **`ademjab33-create`** :
+  1. **Dépôt GitHub public créé et synchronisé** :
+     - 🔗 **Dépôt officiel** : [https://github.com/ademjab33-create/BTT-Studio](https://github.com/ademjab33-create/BTT-Studio)
+  2. **Release Officielle v1.0.0 publiée avec 3 packages ZIP** :
+     - 🔗 **Page de Release** : [https://github.com/ademjab33-create/BTT-Studio/releases/tag/v1.0.0](https://github.com/ademjab33-create/BTT-Studio/releases/tag/v1.0.0)
      - `BTT-Studio-1.0-Yuzu-v1.0.0.zip` (4.53 Mo)
      - `BTT-Studio-1.0-SimpleModManager-v1.0.0.zip` (4.53 Mo)
      - `BTT-Studio-1.0-Atmosphere-v1.0.0.zip` (4.53 Mo)
-  5. **Notes de Release GitHub (`GITHUB_RELEASE_NOTES.md`) & README (`README.md`)** :
-     - Fichier prêt à l'emploi pour les Releases avec tous les détails techniques, badges et crédits.
-  6. **Script d'automatisation Git (`publish_github.ps1`)** :
-     - Script PowerShell guidé pour configurer l'identité git, choisir son remote et pousser la release v1.0.0.
+  3. **Site Web Showcase en ligne (GitHub Pages)** :
+     - 🔗 **Site officiel en direct** : [https://ademjab33-create.github.io/BTT-Studio/](https://ademjab33-create.github.io/BTT-Studio/)
+     - Déployé nativement depuis `main /docs` avec bypass `.nojekyll`.
+     - Simulateur d'Input Display déplaçable avec effet Multicolor Rainbow actif.
+     - Cartes de téléchargement direct en 1 clic pour Yuzu, SMM et Atmosphere.
+  4. **Templates communautaires intégrés** :
+     - `.github/ISSUE_TEMPLATE/bug_report.yml`, `feature_request.yml` et `pull_request_template.md`.
 - **Statut** : RESOLU (13/10/2026)
 
 ### RESOLU — Déplacement libre de l'Input Display & Couleur Multicolor / RGB Rainbow (BTT-Studio 1.0)
