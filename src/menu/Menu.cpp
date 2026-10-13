@@ -48,6 +48,8 @@ void Menu::initCategories() {
     mCategories[0].components.push_back(new BoolMenuComponent(&set->getSettings()->mIsEnableDisableAutoSave, "Disable Autosave"));
     mCategories[0].components.push_back(new BoolMenuComponent(&set->getSettings()->mIsEnableDisableTpPuppet, "Disable TP Puppet"));
     mCategories[0].components.push_back(new BoolMenuComponent(&set->getSettings()->mIsEnableSkipCloud, "Skip Cloud"));
+    // Right column starts here
+    mCategories[0].columnSplit = (int)mCategories[0].components.size();
     mCategories[0].components.push_back(new BoolMenuComponent(&set->getSettings()->mIsEnableAllCheckpoints, "All Checkpoints"));
     mCategories[0].components.push_back(new BoolMenuComponent(&set->getSettings()->mIsEnableLuigiPixels, "Luigi Pixels"));
     mCategories[0].components.push_back(new BoolMenuComponent(&set->getSettings()->mIsEnableHintPhotoSpawn, "Spawn All Hint Art"));
@@ -56,6 +58,7 @@ void Menu::initCategories() {
     mCategories[0].components.push_back(new BoolMenuComponent(&set->getSettings()->mIsEnableNoDamage, "No Damage"));
     mCategories[0].components.push_back(new BoolMenuComponent(&set->getSettings()->mIsEnableDisableMusic, "Disable Music"));
     mCategories[0].components.push_back(new BoolMenuComponent(&set->getSettings()->mIsEnableDisableMoonLock, "Disable Moon Lock"));
+    mCategories[0].components.push_back(new BoolMenuComponent(&set->getSettings()->mIsEnableSkipBroodals, "Skip Broodals"));
     mCategories[0].components.push_back(new BoolMenuComponent(&mIsReloadPos, "Reload Scene at Pos"));
 
     // 1: Stages
@@ -279,6 +282,11 @@ void Menu::drawExpandedCategory() {
     if (mCurrentComponentInCategory < 0)
         mCurrentComponentInCategory = 0;
 
+    if (cat.columnSplit > 0 && cat.columnSplit < (int)cat.components.size()) {
+        drawTwoColumnCategory(cat);
+        return;
+    }
+
     float subX = 0;
     for (int i = 0; i < (int)cat.components.size(); i++) {
         MenuComponent* comp = cat.components[i];
@@ -341,6 +349,53 @@ void Menu::drawExpandedCategory() {
     }
 }
 
+void Menu::drawTwoColumnCategory(Category& cat) {
+    const int count = (int)cat.components.size();
+    const int split = cat.columnSplit;
+    const int ranges[2][2] = {{0, split}, {split, count}};
+
+    float colWidth[2] = {0, 0};
+    for (int c = 0; c < 2; c++) {
+        for (int i = ranges[c][0]; i < ranges[c][1]; i++) {
+            if (cat.components[i]) colWidth[c] = std::max(colWidth[c], cat.components[i]->getSize().x);
+        }
+    }
+
+    int maxRows = std::max(split, count - split);
+    float startY = (float)getCategoryHeight(mCurrentCategory);
+    float totalDrawHeight = maxRows * 44.0f;
+    if (startY + totalDrawHeight > 700.0f) {
+        startY = std::max(10.0f, 700.0f - totalDrawHeight);
+    }
+
+    ImDrawList* drawList = ImGui::GetForegroundDrawList();
+    float colX = mBgSize.x + 8.0f;
+    for (int c = 0; c < 2; c++) {
+        float drawY = 0;
+        for (int i = ranges[c][0]; i < ranges[c][1]; i++) {
+            MenuComponent* comp = cat.components[i];
+            if (!comp) continue;
+            ImVec2 size = comp->getSize();
+            float itemH = size.y > 0 ? size.y : 40.0f;
+            ImVec2 tl(colX, startY + drawY);
+            ImVec2 br(colX + colWidth[c], startY + drawY + itemH);
+
+            drawList->AddRectFilled(tl, br, IM_COL32(0, 0, 0, 150), 12.0f);
+            if (mCurrentComponentInCategory == i) {
+                ImU32 highlightCol = mIsFocusedOnCurrentComponent ? IM_COL32(255, 60, 60, 100) : IM_COL32(255, 255, 255, 76);
+                drawList->AddRectFilled(tl, br, highlightCol, 12.0f);
+            }
+
+            comp->setIsHovered(mCurrentComponentInCategory == i);
+            comp->setIsFocused(mCurrentComponentInCategory == i && mIsFocusedOnCurrentComponent);
+            comp->draw(tl);
+
+            drawY += itemH + 3.0f;
+        }
+        colX += colWidth[c] + 8.0f;
+    }
+}
+
 static bool isPressMenuKey() {
     if (InputHelper::isHoldL() && InputHelper::isPressPadLeft()) return true;
     switch (SettingsMgr::getSettings()->mMenuKey) {
@@ -378,7 +433,27 @@ void Menu::updateMenuInput() {
             mIsFocusedOnCurrentComponent = false;
         }
     } else {
-        if (!mIsFocusedOnCurrentComponent) {
+        const int count = (int)cat.components.size();
+        const bool twoColumns = cat.columnSplit > 0 && cat.columnSplit < count;
+        const bool inRightColumn = twoColumns && mCurrentComponentInCategory >= cat.columnSplit;
+
+        if (!mIsFocusedOnCurrentComponent && twoColumns && (InputHelper::isPressPadDown() || InputHelper::isPressPadUp() ||
+                                                            InputHelper::isPressPadRight() || (inRightColumn && InputHelper::isPressPadLeft()))) {
+            // Two-column navigation: up/down wrap inside the current column, left/right switch column on the same row
+            const int colStart = inRightColumn ? cat.columnSplit : 0;
+            const int colSize = inRightColumn ? count - cat.columnSplit : cat.columnSplit;
+            const int row = mCurrentComponentInCategory - colStart;
+            if (InputHelper::isPressPadDown()) {
+                mCurrentComponentInCategory = colStart + (row + 1) % colSize;
+            } else if (InputHelper::isPressPadUp()) {
+                mCurrentComponentInCategory = colStart + (row + colSize - 1) % colSize;
+            } else if (InputHelper::isPressPadRight()) {
+                if (!inRightColumn)
+                    mCurrentComponentInCategory = cat.columnSplit + std::min(row, count - cat.columnSplit - 1);
+            } else {
+                mCurrentComponentInCategory = std::min(row, cat.columnSplit - 1);
+            }
+        } else if (!mIsFocusedOnCurrentComponent) {
             if (InputHelper::isPressPadDown()) {
                 if (!cat.components.empty()) {
                     mCurrentComponentInCategory = (mCurrentComponentInCategory + 1) % cat.components.size();

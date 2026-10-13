@@ -129,6 +129,8 @@ public:
         ImVec2 mInputDisplayPosP2 = ImVec2(1600.f / 2, 900.f / 2);
         ImVec2 mTimerPos = ImVec2(1600.f / 2, 900.f / 2);
         ImVec2 mInputDisplayPos = ImVec2(1600.f / 2, 900.f / 2);
+        // New settings go below this line so older settings files still load (see SaveFileHelper::loadSettings)
+        SETTING(SkipBroodals);
     } mSettings;
 
     // Settings* getSettings() { return &mSettings; }

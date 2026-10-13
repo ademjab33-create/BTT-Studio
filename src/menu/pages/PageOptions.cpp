@@ -50,6 +50,9 @@ void Menu::drawPageOptions() {
             ImGui::Indent();
             ImGui::Checkbox("Always Allow Checkpoints", &set->getSettings()->mIsEnableAlwaysCheckpoints);
             ImGui::Checkbox("Skip Cloud", &set->getSettings()->mIsEnableSkipCloud);
+            ImGui::Checkbox("Skip Broodals", &set->getSettings()->mIsEnableSkipBroodals);
+            if (GImGui->NavId == ImGui::GetID("Skip Broodals"))
+                ImGui::SetTooltip("Ends Broodal fights right after their intro and spawns the Multi Moon");
             ImGui::Checkbox("Enable All Checkpoints", &set->getSettings()->mIsEnableAllCheckpoints);
             ImGui::Checkbox("Luigi Pixels", &set->getSettings()->mIsEnableLuigiPixels);
             ImGui::Checkbox("Spawn all Hint Art Moons", &set->getSettings()->mIsEnableHintPhotoSpawn);

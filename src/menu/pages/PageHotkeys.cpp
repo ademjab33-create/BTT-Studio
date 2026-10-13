@@ -17,7 +17,6 @@
 #include "imgui.h"
 #include "menu/Menu.h"
 #include "src/settings/SettingsMgr.h"
-#include "settings/LuigiPixels.h"
 
 using namespace btt;
 using Hotkey = SettingsMgr::SettingsHotkey;
@@ -171,7 +170,6 @@ void Menu::triggerReloadPos() {
 
     GameDataFunction::recoveryPlayer(playerHak);
     GameDataFunction::recoveryPlayer(playerHak);
-    LuigiPixels::resetDiscoveredSpots();
 
     reloadStagePos = al::getTrans(playerHak);
     reloadStageQuat = al::getQuat(playerHak);
@@ -228,7 +226,6 @@ void Menu::restartScene() {
         if (!(cmpNrv || cmpState || PlayerFunction::isPlayerDeadStatus(playerHak))) {
             GameDataFunction::recoveryPlayer(playerHak);
             GameDataFunction::recoveryPlayer(playerHak);
-            LuigiPixels::resetDiscoveredSpots();
 
             if (mIsReloadPos) {
                 triggerReloadPos();

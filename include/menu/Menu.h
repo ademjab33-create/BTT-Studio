@@ -28,6 +28,7 @@ public:
     struct Category {
         const char* name;
         std::vector<MenuComponent*> components;
+        int columnSplit = 0; // > 0: components from this index are drawn in a second column on the right
     };
 
     Category mCategories[8];
@@ -35,6 +36,7 @@ public:
 
     void initCategories();
     void drawExpandedCategory();
+    void drawTwoColumnCategory(Category& cat);
     int getCategoryHeight(int id);
     void updateMenuInput();
 

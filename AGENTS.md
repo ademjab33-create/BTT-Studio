@@ -56,6 +56,32 @@ Deux mods sont déployés dans `C:\Users\FlowUP\AppData\Roaming\yuzu\load\010000
 
 ## Problemes connus — Journal de suivi
 
+### A TESTER — Menu Options en 2 colonnes (BTT-Studio 1.0)
+
+- **Description** : La catégorie **Options** du menu vertical s'affiche sur 2 colonnes. Gauche : Moon Refresh → Skip Cloud (14). Droite : All Checkpoints → Disable Moon Lock, puis Reload Scene at Pos.
+- **Implémentation** : champ `Category::columnSplit` dans `include/menu/Menu.h` (index du 1er élément de la colonne droite, fixé après "Skip Cloud" dans `initCategories`). Nouveau `Menu::drawTwoColumnCategory()`. Navigation : Haut/Bas bouclent dans la colonne, Droite passe à la colonne droite (même ligne), Gauche revient à gauche puis ferme la catégorie.
+- **Statut** : compilé et déployé (13/10/2026), à vérifier en jeu.
+
+### A TESTER — Option "Skip Broodals" (BTT-Studio 1.0)
+
+- **Description** : option dans Options (colonne droite) + menu ImGui. Dès la fin de la cinématique de début de combat, le boss est vaincu via son propre code de "dernier coup" → le jeu joue la cinématique de fin et fait apparaître la Multi-Lune comme d'habitude.
+- **Boss gérés (noms internes)** : Hariet = `BombTail`, Spewart = `FireBlower` (+Lv2/Lv3), Rango = `CapThrower`, Madame Broode = `Breeda`. Topper = `Stacker` n'est PAS géré (aucune Multi-Lune liée).
+- **Implémentation** : trampolines sur `<Boss>::control()` (`syms/game/Boss/Broodals.sym`), détection de la sortie du nerve "BattleStartDemo" (`isBroodalBattleStarting`). Hariet/Spewart : PV (+0x108) = 1 puis `damageAndSetNerve()` / `damageOrDie()`. Rango : PV (+0x158) = 0 puis nerve `BattleEndDemo`. Broode : nerve `DamageLast` (appelle `rs::endBossBattle`). Adresses des nerves (1.0.0 uniquement) dans `syms/custom.sym` (`*Nrv*`), trouvées via les tables de relocations de l'ExeFS.
+- **Réglages** : `SETTING(SkipBroodals)` ajouté **à la fin** de `Settings`. `SaveFileHelper::loadSettings` accepte maintenant un fichier plus petit (anciens réglages conservés). Toujours ajouter les nouveaux réglages à la fin.
+- **Statut** : compilé et déployé (13/10/2026), à vérifier en jeu.
+
+### A TESTER — Luigi Pixels = vrai objet du jeu (BTT-Studio 1.0)
+
+- **Description** : l'ancienne animation ImGui (`LuigiPixels.cpp/.h`, sprites dessinés + 18 spots inventés) est **supprimée** (remplace l'entrée "Détection, récompenses, toasts et affichage 3D des Pixel Luigi" plus bas). L'option "Luigi Pixels" force maintenant le vrai Luigi 8-bit officiel.
+- **Fonctionnement du jeu (SMO 1.0.0, analysé depuis l'ExeFS dumpé par Yuzu)** : un item de type `DotMarioCat` (type 19) tire `al::isPercentProbability(10.0f)` à l'init (main+0x5556f4) : 10 % → item `ドットキャラクター(レア)` = `DotCharacterRare` (modèle `DotMarioCatRare`, sort du sol, pièces, s'enfuit), sinon `コイン[自動取得]`. Spawn via `ProjectItemDirector::appearItem` → `DotCharacterRare::appearPopUp`.
+- **Implémentation** : `LuigiRareRoll = 0x005556f4` (@smo:100) dans `syms/custom.sym`, `writeBranchLinkAtSym<"LuigiRareRoll">(luigiRareRoll)` dans `SettingsHooks.cpp` → renvoie `true` si l'option est active, sinon le tirage normal. `_ZN2al20isPercentProbabilityEf` ajouté à `syms/al/Library/Math/MathUtil.sym`. Le tirage a lieu au chargement du stage : recharger la scène après avoir changé l'option.
+- **Statut** : compilé et déployé (13/10/2026), à vérifier en jeu.
+
+### A TESTER — Photo à la place de l'écran Joy-Con au boot (BTT-Studio 1.0)
+
+- **Description** : `romfs/LayoutData/BootLoading.szs` (Yuzu `Practice mod 1.0` uniquement) remplace la texture `MyControllerJoyCon^w` (960x540 ASTC 4x4 sRGB) par une photo.
+- **Piège** : reconstruire la SARC avec oead `SarcWriter` décale `layout.lyarc` (0x2000 → 0xd0) et casse l'alignement de la BNTX → crash `nn::gfx::TextureImpl::Initialize` dans `BootLayout`. Il faut patcher les octets de la texture en place dans l'archive d'origine et recompresser en Yaz0 avec alignement 0x2000.
+
 ### RESOLU — Écosystème GitHub Publié : Dépôt Public, Release v1.0.0 & Showcase Pages en Ligne (BTT-Studio 1.0)
 
 - **Description** : Publication officielle et intégration complète de l'écosystème GitHub sous le compte utilisateur **`ademjab33-create`** :

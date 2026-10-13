@@ -2,6 +2,7 @@
 
 _ZN2al9getRandomEi
 _ZN2al17isHalfProbabilityEv
+_ZN2al20isPercentProbabilityEf
 
 @smo:130
 

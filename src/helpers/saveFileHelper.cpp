@@ -6,6 +6,7 @@
 #include "sead/heap/seadHeapMgr.h"
 
 #include <cstddef>
+#include <cstring>
 
 #include "helpers/fsHelper.h"
 #include "logger.h"
@@ -52,7 +53,8 @@ void SaveFileHelper::loadSettings(sead::Heap* heap) {
         Logger::instance()->log(Logger::LogType::LogErr, "Failed to load settings from %s", mSettingsPath);
         return;
     }
-    if (data.bufSize != sizeof(btt::SettingsMgr::Settings)) {
+    // Settings appended at the end of the struct keep their defaults when loading an older, smaller file
+    if (data.bufSize > sizeof(btt::SettingsMgr::Settings) || data.bufSize < sizeof(btt::SettingsMgr::Settings::Version)) {
         Logger::instance()->log(
             Logger::LogType::LogErr, "Invalid settings size: %zu, expected: %zu", data.bufSize,
             sizeof(btt::SettingsMgr::Settings)
@@ -69,7 +71,7 @@ void SaveFileHelper::loadSettings(sead::Heap* heap) {
         return;
     }
 
-    btt::SettingsMgr::instance()->mSettings = *configData;
+    memcpy(&btt::SettingsMgr::instance()->mSettings, data.buffer, data.bufSize);
 }
 
 void SaveFileHelper::saveTeleport(btt::Menu::TpState* states, size_t count) {

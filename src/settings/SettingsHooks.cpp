@@ -28,7 +28,6 @@
 #include "logger.h"
 #include "menu/Menu.h"
 #include "settings/DemoHooks.hpp"
-#include "settings/LuigiPixels.h"
 #include "src/settings/SettingsMgr.h"
 
 using namespace hk;
@@ -53,9 +52,67 @@ HkTrampoline ShineRefreshHook = [](TrampolineStatic(), GameDataHolderWriter writ
     if (!SettingsMgr::instance()->getSettings()->mIsEnableMoonRefresh) orig(writer, shineInfo);
 };
 
-HkTrampoline marioControl = [](TrampolineStatic(), al::LiveActor* player) -> void {
-    orig(player);
-    LuigiPixels::update(player);
+// Items of type DotMarioCat roll al::isPercentProbability(10.0f) at init to become
+// "ドットキャラクター(レア)" (8-bit Luigi popping out of the ground) instead of a coin.
+bool luigiRareRoll(f32 percent) {
+    return SettingsMgr::instance()->getSettings()->mIsEnableLuigiPixels || al::isPercentProbability(percent);
+}
+
+// Skip Broodals: once a Broodal fight's start cutscene ends, finish the boss through its own
+// last-hit code so the game plays the defeat cutscene and spawns the Multi Moon as usual.
+extern "C" void BombTail_damageAndSetNerve(al::LiveActor* boss) asm("_ZN8BombTail17damageAndSetNerveEv");
+extern "C" void FireBlower_damageOrDie(al::LiveActor* boss) asm("_ZN10FireBlower11damageOrDieEv");
+
+static const al::Nerve* getNerveFromDb(const char* name) {
+    return reinterpret_cast<const al::Nerve*>(hk::sail::lookupSymbolFromDb<>(name));
+}
+
+// True on the first frame after `boss` leaves its battle start cutscene nerve
+static bool isBroodalBattleStarting(al::LiveActor* boss, const char* startDemoNerve) {
+    static const al::LiveActor* sBoss = nullptr;
+    static bool sWasInStartDemo = false;
+
+    bool isInStartDemo = al::isNerve(boss, getNerveFromDb(startDemoNerve));
+    if (boss != sBoss) {
+        sBoss = boss;
+        sWasInStartDemo = false;
+    }
+    bool isStarting = sWasInStartDemo && !isInStartDemo;
+    sWasInStartDemo = isInStartDemo;
+    return isStarting && SettingsMgr::instance()->getSettings()->mIsEnableSkipBroodals;
+}
+
+// Hariet / Spewart: hit points at +0x108, the damage function sets the battle end nerve at 0
+HkTrampoline bombTailControlHook = [](TrampolineStatic(), al::LiveActor* boss) -> void {
+    orig(boss);
+    if (isBroodalBattleStarting(boss, "BombTailNrvBattleStartDemo")) {
+        *reinterpret_cast<s32*>(reinterpret_cast<u8*>(boss) + 0x108) = 1;
+        BombTail_damageAndSetNerve(boss);
+    }
+};
+
+HkTrampoline fireBlowerControlHook = [](TrampolineStatic(), al::LiveActor* boss) -> void {
+    orig(boss);
+    if (isBroodalBattleStarting(boss, "FireBlowerNrvBattleStartDemo")) {
+        *reinterpret_cast<s32*>(reinterpret_cast<u8*>(boss) + 0x108) = 1;
+        FireBlower_damageOrDie(boss);
+    }
+};
+
+// Rango: hit points at +0x158, the last stomp goes straight to the battle end nerve
+HkTrampoline capThrowerControlHook = [](TrampolineStatic(), al::LiveActor* boss) -> void {
+    orig(boss);
+    if (isBroodalBattleStarting(boss, "CapThrowerNrvBattleStartDemo")) {
+        *reinterpret_cast<s32*>(reinterpret_cast<u8*>(boss) + 0x158) = 0;
+        al::setNerve(boss, getNerveFromDb("CapThrowerNrvBattleEndDemo"));
+    }
+};
+
+// Madame Broode: DamageLast ends the boss battle and leads to the battle end cutscene
+HkTrampoline breedaControlHook = [](TrampolineStatic(), al::LiveActor* boss) -> void {
+    orig(boss);
+    if (isBroodalBattleStarting(boss, "BreedaNrvDemoBattleStart"))
+        al::setNerve(boss, getNerveFromDb("BreedaNrvDamageLast"));
 };
 
 HkTrampoline stageSceneControlHook = [](TrampolineStatic(), StageScene* stageScene) -> void {
@@ -360,6 +417,11 @@ void SettingsHooks::installSettingsHooks() {
 
     installDemoHooks();
     installWigglerHooks();
+    hk::hook::writeBranchLinkAtSym<"LuigiRareRoll">(luigiRareRoll);
+    bombTailControlHook.installAtSym<"_ZN8BombTail7controlEv">();
+    fireBlowerControlHook.installAtSym<"_ZN10FireBlower7controlEv">();
+    capThrowerControlHook.installAtSym<"_ZN10CapThrower7controlEv">();
+    breedaControlHook.installAtSym<"_ZN6Breeda7controlEv">();
     installPipeRandoHooks();
 
     ptr addr = sail::lookupSymbolFromDb<>("UpdateMapTarget");
@@ -373,7 +435,6 @@ void SettingsHooks::installSettingsHooks() {
     GreyShineRefreshHook
         .installAtSym<"_ZN16GameDataFunction10isGotShineE22GameDataHolderAccessorPK9ShineInfo">();
     ShineRefreshHook.installAtSym<"_ZN16GameDataFunction11setGotShineE20GameDataHolderWriterPK9ShineInfo">();
-    marioControl.installAtSym<"_ZN19PlayerActorHakoniwa7controlEv">();
     stageSceneControlHook.installAtSym<"_ZN10StageScene7controlEv">();
     saveHook.installAtSym<"_ZNK10StageScene12isEnableSaveEv">();
     checkpointWarpHook.installAtSym<"_ZNK9MapLayout22isEnableCheckpointWarpEv">();

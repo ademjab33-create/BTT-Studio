@@ -21,7 +21,6 @@
 #include "menu/InputDisplay.h"
 #include "menu/Menu.h"
 #include "menu/Timer.h"
-#include "settings/LuigiPixels.h"
 #include "settings/SettingsHooks.h"
 #include "settings/TimerHooks.h"
 
@@ -98,10 +97,6 @@ HkTrampoline gameSystemInit = [](TrampolineStatic(), GameSystem* gameSystem) -> 
                 timer->draw();
             }
         }
-    });
-    // Luigi Pixels (3D in-world animated sprite)
-    btt::imgui::addDrawFunc([] {
-        btt::LuigiPixels::draw();
     });
     logger->log(Logger::LogType::LogInfo, "ImGui setup done");
 
