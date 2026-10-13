@@ -10,13 +10,13 @@
 
 ---
 
-## 🌐 Démo & Showcase Interactif
+## 🌐 Site Web & Guide Officiel
 
-Un site web vitrine interactif est disponible dans le dossier [`docs/`](docs/index.html) (compatible **GitHub Pages**) :
-- **Simulateur d'Input Display en direct** : déplacez la manette à la souris (drag & drop) et testez les presets.
-- **Effet Multicolor (RGB Rainbow)** animé en temps réel.
+Le site officiel en ligne est disponible sur **GitHub Pages** ([https://ademjab33-create.github.io/BTT-Studio/](https://ademjab33-create.github.io/BTT-Studio/)) :
+- **Guide complet des 8 catégories d'options** expliquées simplement et sans jargon.
+- **Téléchargement direct en 1 clic** pour Yuzu, Simple Mod Manager et Atmosphere.
 - **Comparatif interactif des versions** (SMO Vanilla vs Practice Mod 1.3 vs BTT Studio 1.0).
-- **Guide pas-à-pas** et copie des chemins d'accès en 1 clic.
+- **Instructions détaillées d'installation** avec copie des dossiers.
 
 ---
 
@@ -54,6 +54,101 @@ Un site web vitrine interactif est disponible dans le dossier [`docs/`](docs/ind
 ### ⚡ 7. Speedrun Refreshes Intégrés
 - **Cutscene Refresh :** Réactive toutes les cinématiques et dialogues PNJ (Capitaine Toad, Hint Toad, Jammin' Toad, Traveling Peach).
 - **Warp Text Refresh :** Réactive les explications Cappy des checkpoints.
+
+---
+
+## 📋 Guide Complet des Options du Menu
+
+Le menu vertical translucide s'ouvre avec la combinaison **`L + D-Pad Gauche`**. Voici l'explication simple et courte de chaque option :
+
+### ⚙️ 1. Options (Entraînement)
+- **Moon Refresh** : Permet de reprendre une lune déjà obtenue.
+- **Gray Moon Refresh** : Fait réapparaître les lunes grises/transparentes.
+- **Purple Coins Refresh** : Fait réapparaître les pièces violettes régionales.
+- **Doors Refresh** : Réinitialise l'état fermé des portes du niveau.
+- **Moon Shards Refresh** : Fait réapparaître les 5 fragments de lune.
+- **Kingdom Enter Refresh** : Rejoue l'arrivée de l'Odyssée dans le pays.
+- **Warp Text Refresh** : Réactive l'explication de Cappy au drapeau.
+- **Seeds Refresh** : Réinitialise les pots et graines dorées.
+- **Cutscene Refresh** : Réactive les cinématiques et dialogues initiaux des PNJ.
+- **Always Manual Cutscene** : Permet de passer les cinématiques sans attente.
+- **Always Checkpoints** : Valide les checkpoints dès qu'on s'en approche.
+- **Disable Autosave** : Coupe la sauvegarde auto pour garder sa partie propre.
+- **Disable TP Puppet** : Supprime l'animation d'attente de Mario pendant un warp.
+- **Skip Cloud** : Passe les transitions nuageuses entre les zones.
+- **All Checkpoints** : Débloque tous les drapeaux de téléportation du niveau.
+- **Luigi Pixels** : Affiche les 18 Pixel Luigi 8-bit dans le sol (+200 pièces chacun).
+- **Spawn All Hint Art** : Fait apparaître tous les indices artistiques d'Hint Toad.
+- **Pipe Maze Override** : Force le passage dans les labyrinthes de tuyaux.
+- **No Checkpoint Touch** : Empêche d'activer un drapeau par erreur en le frôlant.
+- **No Damage** : Mario ne subit aucun dégât (invincibilité totale).
+- **Disable Music** : Coupe la musique pour n'entendre que les bruitages du jeu.
+- **Disable Moon Lock** : Débloque l'Odyssée sans le nombre de lunes requis.
+- **Reload Scene at Pos** : Recharge tout le niveau en restant exactement à sa position.
+
+### 🗺️ 2. Stages (Téléportation)
+- **Kingdom** : Sélection du pays parmi les 17 royaumes (Bonneton jusqu'à Côté Très Sombre).
+- **Scenario** : Sélection du chapitre d'histoire (0 à 15).
+- **Warp to Stage** : Bouton pour se téléporter immédiatement au monde et scénario choisis.
+
+### 🎒 3. Misc (Actions & Utilitaires)
+- **Outfit Body** : Sélection de la tenue parmi 42 costumes officiels.
+- **Outfit Cap** : Sélection du chapeau parmi 42 casquettes/chapeaux.
+- **Apply Outfit** : Bouton pour équiper immédiatement la tenue choisie.
+- **Save Position** : Sauvegarde manuelle des coordonnées actuelles.
+- **Load Position** : Téléportation immédiate à la sauvegarde (caméra instantanée).
+- **Restart Scene** : Relance le niveau au point de départ normal.
+- **Reload at Pos** : Active le rechargement de niveau à la position actuelle.
+- **Restart at Pos** : Bouton direct pour relancer la scène à votre position.
+- **Kill Mario** : Élimine Mario immédiatement (mort instantanée).
+- **Damage Mario** : Inflige 1 point de dégât pour tester une réaction physique.
+- **Life Up Heart** : Donne un cœur géant (passe la barre à 6 PV max).
+- **Heal Mario** : Rend toute sa vie à Mario à 100%.
+- **Add 1000 Coins** : Ajoute 1 000 pièces d'or.
+- **Remove 1000 Coins** : Retire 1 000 pièces d'or.
+- **Reload Scene** : Force un rechargement propre de la scène.
+- **Previous Scene** : Téléporte dans la zone ou le niveau précédent.
+- **Wiggler Pattern** : Choix du pattern de déplacement du boss Méca-Wiggler (23 choix).
+
+### ⏱️ 4. Timer (Chronomètre)
+- **Segment Timer** : Affiche le chronomètre de speedrun à l'écran.
+- **Timer Split** : Active le découpage automatique des temps aux checkpoints.
+- **Start Timer** : Démarre le chronomètre.
+- **Stop Timer** : Met le chronomètre en pause.
+- **Reset Timer** : Remet le chronomètre à zéro (00:00:00).
+
+### 🎮 5. Input Display (Affichage Manette)
+- **Input Display** : Affiche ou masque la manette à l'écran.
+- **2P Mode** : Affiche aussi la 2e manette (Joueur 2 / Cappy).
+- **Preset Pos** : Place la manette au Centre ou dans les 4 coins d'un clic.
+- **Position X & Y** : Règle l'emplacement par pas de 25px (ou glisser-déposer à la souris).
+- **Reset Position** : Replace la manette au centre de l'écran.
+- **Button Color** : Couleur des boutons au repos (13 teintes au choix).
+- **Pressed Color** : Couleur des boutons quand ils sont enfoncés.
+- **Stick Color** : Couleur des sticks analogiques.
+- **Ring Color** : Couleur des cercles entourant les sticks.
+- **BG Color** : Couleur et transparence du boîtier de la manette.
+- **Multicolor** : Effet dynamique arc-en-ciel RGB animé fluide sur n'importe quel élément.
+
+### 🕹️ 6. Keybinds (Raccourcis Manette)
+- **Open Menu** : Touche pour ouvrir le menu (*L + D-Pad Gauche* par défaut).
+- **Save Position** : Touche rapide pour sauver la position (*D-Pad Gauche* par défaut).
+- **Load Position** : Touche rapide pour se téléporter (*D-Pad Droite* par défaut).
+- **Restart Scene** : Touche rapide pour relancer le niveau (*D-Pad Haut* par défaut).
+- **Heal Mario** : Raccourci pour redonner toute la vie.
+- **Life Up** : Raccourci pour donner le cœur 6 PV.
+- **Prev Scene** : Raccourci pour revenir en arrière.
+- **Warp Last CP** : Raccourci pour aller au dernier checkpoint touché.
+- **Timer Start** : Raccourci pour démarrer le chronomètre à la manette.
+- **Timer End** : Raccourci pour stopper le chronomètre.
+- **Timer Reset** : Raccourci pour remettre le chronomètre à zéro.
+
+### 📊 7. Info (Données en direct)
+- **Info Window** : Affiche ou masque la fenêtre de données.
+- **Player Info** : Affiche en direct les coordonnées (X, Y, Z), la vitesse de Mario et l'entité possédée par Cappy.
+
+### 🛠️ 8. Settings (Configuration)
+- **Menu Corner** : Choisit l'angle de l'écran où s'ancre le menu vertical (Haut-Gauche, Haut-Droite, Bas-Gauche, Bas-Droite).
 
 ---
 
